@@ -128,8 +128,12 @@ function diffChildren(
 
 function updateAttributes(props: object, el: SigDom<Element>) {
   for (const [key, value] of Object.entries(props)) {
+    if (key in el) {
+      // @ts-expect-error anyish
+      el[key] = value == null ? "" : value;
+    }
     // TODO: inline styles
-    if (key.startsWith("on")) {
+    else if (key.startsWith("on")) {
       const eventName = key.slice(2).toLowerCase();
       const oldValue = el[SigDom.listeners][eventName];
 
