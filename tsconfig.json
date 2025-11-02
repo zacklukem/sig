@@ -29,8 +29,8 @@
 
     "paths": {
       "sig": ["./src"],
-      "sig/jsx-runtime": ["./src/jsx-runtime.ts"],
-      "sig/jsx-dev-runtime": ["./src/jsx-dev-runtime.ts"]
+      "sig/jsx-runtime": ["./src"],
+      "sig/jsx-dev-runtime": ["./src"]
     }
   }
 }
