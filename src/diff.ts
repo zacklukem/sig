@@ -1,12 +1,7 @@
 import { isVNode } from "./brands";
 import { asRef, deref } from "./ref";
 import { diffArrays } from "diff";
-import type {
-  ComponentChild,
-  ComponentChildren,
-  NormalComponentChild,
-  VNode,
-} from "./types";
+import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
 
 const textNodeType = "text";
 
@@ -14,9 +9,7 @@ function isNormalChild(child: ComponentChild): child is NormalComponentChild {
   return child !== null && child !== undefined && typeof child !== "boolean";
 }
 
-function normalizeChildren(
-  children: ComponentChildren
-): NormalComponentChild[] {
+function normalizeChildren(children: ComponentChildren): NormalComponentChild[] {
   if (Array.isArray(children)) {
     return children.flat().map(deref).filter(isNormalChild);
   } else if (isNormalChild(children)) {
@@ -34,11 +27,7 @@ type RenderedNode = {
   key?: unknown;
 };
 
-function insertNode(
-  parentDom: ChildNode,
-  node: ChildNode,
-  nextSibling: ChildNode | undefined
-) {
+function insertNode(parentDom: ChildNode, node: ChildNode, nextSibling: ChildNode | undefined) {
   if (nextSibling) {
     parentDom.insertBefore(node, nextSibling);
   } else {
@@ -75,10 +64,7 @@ function diffChild(
   }
 }
 
-function nodeKey(node: {
-  type: string | Function;
-  key?: unknown;
-}): string | symbol | Function {
+function nodeKey(node: { type: string | Function; key?: unknown }): string | symbol | Function {
   return node.key ? Symbol.for(node.key.toString()) : node.type;
 }
 
@@ -114,9 +100,7 @@ function diffChildren(
       iOld++;
     } else {
       const ns = oldChildren[iOld + 1]?.dom ?? nextSibling;
-      output.push(
-        diffChild(parentDom, newChildren[iNew]!, oldChildren[iOld]!, ns)
-      );
+      output.push(diffChild(parentDom, newChildren[iNew]!, oldChildren[iOld]!, ns));
       iOld++;
       iNew++;
     }
@@ -145,12 +129,7 @@ export function diff(
       type: newNode.type,
       dom: parentDom,
       props,
-      children: diffChildren(
-        parentDom,
-        newChildren,
-        oldNode?.children ?? [],
-        nextSibling
-      ),
+      children: diffChildren(parentDom, newChildren, oldNode?.children ?? [], nextSibling),
       key: newNode.key,
     };
   } else {
@@ -182,12 +161,7 @@ export function diff(
       type: newNode.type,
       dom: el,
       props: props,
-      children: diffChildren(
-        el,
-        newChildren,
-        oldNode?.children ?? [],
-        undefined
-      ),
+      children: diffChildren(el, newChildren, oldNode?.children ?? [], undefined),
     };
   }
 }

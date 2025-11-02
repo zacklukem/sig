@@ -86,11 +86,7 @@ type Booleanish = boolean | "true" | "false";
 export type DOMCSSProperties = {
   [key in keyof Omit<
     CSSStyleDeclaration,
-    | "item"
-    | "setProperty"
-    | "removeProperty"
-    | "getPropertyValue"
-    | "getPropertyPriority"
+    "item" | "setProperty" | "removeProperty" | "getPropertyValue" | "getPropertyPriority"
   >]?: string | number | null | undefined;
 };
 export type AllCSSProperties = {
@@ -142,13 +138,9 @@ export interface SVGAttributes<Target extends EventTarget = SVGElement>
   alphabetic?: RefOrValue<number | string | undefined>;
   amplitude?: RefOrValue<number | string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/arabic-form */
-  arabicForm?: RefOrValue<
-    "initial" | "medial" | "terminal" | "isolated" | undefined
-  >;
+  arabicForm?: RefOrValue<"initial" | "medial" | "terminal" | "isolated" | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/arabic-form */
-  "arabic-form"?: RefOrValue<
-    "initial" | "medial" | "terminal" | "isolated" | undefined
-  >;
+  "arabic-form"?: RefOrValue<"initial" | "medial" | "terminal" | "isolated" | undefined>;
   ascent?: RefOrValue<number | string | undefined>;
   attributeName?: RefOrValue<string | undefined>;
   attributeType?: RefOrValue<string | undefined>;
@@ -172,12 +164,8 @@ export interface SVGAttributes<Target extends EventTarget = SVGElement>
   "clip-rule"?: RefOrValue<number | string | undefined>;
   colorInterpolation?: RefOrValue<number | string | undefined>;
   "color-interpolation"?: RefOrValue<number | string | undefined>;
-  colorInterpolationFilters?: RefOrValue<
-    "auto" | "sRGB" | "linearRGB" | "inherit" | undefined
-  >;
-  "color-interpolation-filters"?: RefOrValue<
-    "auto" | "sRGB" | "linearRGB" | "inherit" | undefined
-  >;
+  colorInterpolationFilters?: RefOrValue<"auto" | "sRGB" | "linearRGB" | "inherit" | undefined>;
+  "color-interpolation-filters"?: RefOrValue<"auto" | "sRGB" | "linearRGB" | "inherit" | undefined>;
   colorProfile?: RefOrValue<number | string | undefined>;
   "color-profile"?: RefOrValue<number | string | undefined>;
   colorRendering?: RefOrValue<number | string | undefined>;
@@ -373,18 +361,10 @@ export interface SVGAttributes<Target extends EventTarget = SVGElement>
   "stroke-dasharray"?: RefOrValue<string | number | undefined>;
   strokeDashoffset?: RefOrValue<string | number | undefined>;
   "stroke-dashoffset"?: RefOrValue<string | number | undefined>;
-  strokeLinecap?: RefOrValue<
-    "butt" | "round" | "square" | "inherit" | undefined
-  >;
-  "stroke-linecap"?: RefOrValue<
-    "butt" | "round" | "square" | "inherit" | undefined
-  >;
-  strokeLinejoin?: RefOrValue<
-    "miter" | "round" | "bevel" | "inherit" | undefined
-  >;
-  "stroke-linejoin"?: RefOrValue<
-    "miter" | "round" | "bevel" | "inherit" | undefined
-  >;
+  strokeLinecap?: RefOrValue<"butt" | "round" | "square" | "inherit" | undefined>;
+  "stroke-linecap"?: RefOrValue<"butt" | "round" | "square" | "inherit" | undefined>;
+  strokeLinejoin?: RefOrValue<"miter" | "round" | "bevel" | "inherit" | undefined>;
+  "stroke-linejoin"?: RefOrValue<"miter" | "round" | "bevel" | "inherit" | undefined>;
   strokeMiterlimit?: RefOrValue<string | number | undefined>;
   "stroke-miterlimit"?: RefOrValue<string | number | undefined>;
   strokeOpacity?: RefOrValue<number | string | undefined>;
@@ -489,7 +469,7 @@ export interface PathAttributes {
 
 export type TargetedEvent<
   Target extends EventTarget = EventTarget,
-  TypedEvent extends Event = Event
+  TypedEvent extends Event = Event,
 > = Omit<TypedEvent, "currentTarget"> & {
   readonly currentTarget: Target;
 };
@@ -502,66 +482,34 @@ export type TargetedClipboardEvent<Target extends EventTarget> = TargetedEvent<
   Target,
   ClipboardEvent
 >;
-export type TargetedCommandEvent<Target extends EventTarget> = TargetedEvent<
+export type TargetedCommandEvent<Target extends EventTarget> = TargetedEvent<Target, CommandEvent>;
+export type TargetedCompositionEvent<Target extends EventTarget> = TargetedEvent<
   Target,
-  CommandEvent
+  CompositionEvent
 >;
-export type TargetedCompositionEvent<Target extends EventTarget> =
-  TargetedEvent<Target, CompositionEvent>;
-export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  DragEvent
->;
-export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  FocusEvent
->;
-export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  InputEvent
->;
+export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<Target, DragEvent>;
+export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<Target, FocusEvent>;
+export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<Target, InputEvent>;
 export type TargetedKeyboardEvent<Target extends EventTarget> = TargetedEvent<
   Target,
   KeyboardEvent
 >;
-export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  MouseEvent
->;
-export type TargetedPointerEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  PointerEvent
->;
-export type TargetedSnapEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  SnapEvent
->;
-export type TargetedSubmitEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  SubmitEvent
->;
-export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  TouchEvent
->;
-export type TargetedToggleEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  ToggleEvent
->;
+export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<Target, MouseEvent>;
+export type TargetedPointerEvent<Target extends EventTarget> = TargetedEvent<Target, PointerEvent>;
+export type TargetedSnapEvent<Target extends EventTarget> = TargetedEvent<Target, SnapEvent>;
+export type TargetedSubmitEvent<Target extends EventTarget> = TargetedEvent<Target, SubmitEvent>;
+export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<Target, TouchEvent>;
+export type TargetedToggleEvent<Target extends EventTarget> = TargetedEvent<Target, ToggleEvent>;
 export type TargetedTransitionEvent<Target extends EventTarget> = TargetedEvent<
   Target,
   TransitionEvent
 >;
-export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<
+export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<Target, UIEvent>;
+export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<Target, WheelEvent>;
+export type TargetedPictureInPictureEvent<Target extends EventTarget> = TargetedEvent<
   Target,
-  UIEvent
+  PictureInPictureEvent
 >;
-export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<
-  Target,
-  WheelEvent
->;
-export type TargetedPictureInPictureEvent<Target extends EventTarget> =
-  TargetedEvent<Target, PictureInPictureEvent>;
 
 export type EventHandler<E extends TargetedEvent> = {
   bivarianceHack(event: E): void;
@@ -579,18 +527,14 @@ export type CommandEventHandler<Target extends EventTarget> = EventHandler<
 export type CompositionEventHandler<Target extends EventTarget> = EventHandler<
   TargetedCompositionEvent<Target>
 >;
-export type DragEventHandler<Target extends EventTarget> = EventHandler<
-  TargetedDragEvent<Target>
->;
+export type DragEventHandler<Target extends EventTarget> = EventHandler<TargetedDragEvent<Target>>;
 export type ToggleEventHandler<Target extends EventTarget> = EventHandler<
   TargetedToggleEvent<Target>
 >;
 export type FocusEventHandler<Target extends EventTarget> = EventHandler<
   TargetedFocusEvent<Target>
 >;
-export type GenericEventHandler<Target extends EventTarget> = EventHandler<
-  TargetedEvent<Target>
->;
+export type GenericEventHandler<Target extends EventTarget> = EventHandler<TargetedEvent<Target>>;
 export type InputEventHandler<Target extends EventTarget> = EventHandler<
   TargetedInputEvent<Target>
 >;
@@ -603,9 +547,7 @@ export type MouseEventHandler<Target extends EventTarget> = EventHandler<
 export type PointerEventHandler<Target extends EventTarget> = EventHandler<
   TargetedPointerEvent<Target>
 >;
-export type SnapEventHandler<Target extends EventTarget> = EventHandler<
-  TargetedSnapEvent<Target>
->;
+export type SnapEventHandler<Target extends EventTarget> = EventHandler<TargetedSnapEvent<Target>>;
 export type SubmitEventHandler<Target extends EventTarget> = EventHandler<
   TargetedSubmitEvent<Target>
 >;
@@ -615,17 +557,15 @@ export type TouchEventHandler<Target extends EventTarget> = EventHandler<
 export type TransitionEventHandler<Target extends EventTarget> = EventHandler<
   TargetedTransitionEvent<Target>
 >;
-export type UIEventHandler<Target extends EventTarget> = EventHandler<
-  TargetedUIEvent<Target>
->;
+export type UIEventHandler<Target extends EventTarget> = EventHandler<TargetedUIEvent<Target>>;
 export type WheelEventHandler<Target extends EventTarget> = EventHandler<
   TargetedWheelEvent<Target>
 >;
-export type PictureInPictureEventHandler<Target extends EventTarget> =
-  EventHandler<TargetedPictureInPictureEvent<Target>>;
+export type PictureInPictureEventHandler<Target extends EventTarget> = EventHandler<
+  TargetedPictureInPictureEvent<Target>
+>;
 
-export interface DOMAttributes<Target extends EventTarget>
-  extends BaseAttributes {
+export interface DOMAttributes<Target extends EventTarget> extends BaseAttributes {
   // Image Events
   onLoad?: GenericEventHandler<Target> | undefined;
   onLoadCapture?: GenericEventHandler<Target> | undefined;
@@ -870,9 +810,7 @@ export interface AriaAttributes {
    * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
    * presented if they are made.
    */
-  "aria-autocomplete"?: RefOrValue<
-    "none" | "inline" | "list" | "both" | undefined
-  >;
+  "aria-autocomplete"?: RefOrValue<"none" | "inline" | "list" | "both" | undefined>;
   /**
    * Defines a string value that labels the current element, which is intended to be converted into Braille.
    * @see aria-label.
@@ -1088,9 +1026,7 @@ export interface AriaAttributes {
    */
   "aria-setsize"?: RefOrValue<number | undefined>;
   /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-  "aria-sort"?: RefOrValue<
-    "none" | "ascending" | "descending" | "other" | undefined
-  >;
+  "aria-sort"?: RefOrValue<"none" | "ascending" | "descending" | "other" | undefined>;
   /** Defines the maximum allowed value for a range widget. */
   "aria-valuemax"?: RefOrValue<number | undefined>;
   /** Defines the minimum allowed value for a range widget. */
@@ -1283,9 +1219,7 @@ export interface AllHTMLAttributes<RefType extends EventTarget = EventTarget>
   colSpan?: RefOrValue<number | undefined>;
   colspan?: RefOrValue<number | undefined>;
   content?: RefOrValue<string | undefined>;
-  contentEditable?: RefOrValue<
-    Booleanish | "" | "plaintext-only" | "inherit" | undefined
-  >;
+  contentEditable?: RefOrValue<Booleanish | "" | "plaintext-only" | "inherit" | undefined>;
   contenteditable?: RefOrValue<AllHTMLAttributes["contentEditable"]>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contextmenu */
   contextMenu?: RefOrValue<string | undefined>;
@@ -1317,14 +1251,7 @@ export interface AllHTMLAttributes<RefType extends EventTarget = EventTarget>
   encType?: RefOrValue<string | undefined>;
   enctype?: RefOrValue<string | undefined>;
   enterkeyhint?: RefOrValue<
-    | "enter"
-    | "done"
-    | "go"
-    | "next"
-    | "previous"
-    | "search"
-    | "send"
-    | undefined
+    "enter" | "done" | "go" | "next" | "previous" | "search" | "send" | undefined
   >;
   elementTiming?: RefOrValue<string | undefined>;
   elementtiming?: RefOrValue<AllHTMLAttributes["elementTiming"]>;
@@ -1516,23 +1443,12 @@ export interface HTMLAttributes<RefType extends EventTarget = EventTarget>
   autoFocus?: RefOrValue<boolean | undefined>;
   class?: RefOrValue<string | undefined>;
   className?: RefOrValue<string | undefined>;
-  contenteditable?: RefOrValue<
-    Booleanish | "" | "plaintext-only" | "inherit" | undefined
-  >;
-  contentEditable?: RefOrValue<
-    Booleanish | "" | "plaintext-only" | "inherit" | undefined
-  >;
+  contenteditable?: RefOrValue<Booleanish | "" | "plaintext-only" | "inherit" | undefined>;
+  contentEditable?: RefOrValue<Booleanish | "" | "plaintext-only" | "inherit" | undefined>;
   dir?: RefOrValue<"auto" | "rtl" | "ltr" | undefined>;
   draggable?: RefOrValue<boolean | undefined>;
   enterkeyhint?: RefOrValue<
-    | "enter"
-    | "done"
-    | "go"
-    | "next"
-    | "previous"
-    | "search"
-    | "send"
-    | undefined
+    "enter" | "done" | "go" | "next" | "previous" | "search" | "send" | undefined
   >;
   exportparts?: RefOrValue<string | undefined>;
   hidden?: RefOrValue<boolean | "hidden" | "until-found" | undefined>;
@@ -1598,15 +1514,9 @@ export type HTMLAttributeReferrerPolicy =
   | "strict-origin-when-cross-origin"
   | "unsafe-url";
 
-export type HTMLAttributeAnchorTarget =
-  | "_self"
-  | "_blank"
-  | "_parent"
-  | "_top"
-  | (string & {});
+export type HTMLAttributeAnchorTarget = "_self" | "_blank" | "_parent" | "_top" | (string & {});
 
-export interface PartialAnchorHTMLAttributes<T extends EventTarget>
-  extends HTMLAttributes<T> {
+export interface PartialAnchorHTMLAttributes<T extends EventTarget> extends HTMLAttributes<T> {
   download?: RefOrValue<any>;
   hreflang?: RefOrValue<string | undefined>;
   hrefLang?: RefOrValue<string | undefined>;
@@ -1646,9 +1556,11 @@ export type AnchorAriaRoles =
       role?: RefOrValue<AriaRole | undefined>;
     };
 
-export type AccessibleAnchorHTMLAttributes<
-  T extends EventTarget = HTMLAnchorElement
-> = Omit<PartialAnchorHTMLAttributes<T>, "role"> & AnchorAriaRoles;
+export type AccessibleAnchorHTMLAttributes<T extends EventTarget = HTMLAnchorElement> = Omit<
+  PartialAnchorHTMLAttributes<T>,
+  "role"
+> &
+  AnchorAriaRoles;
 
 export interface AnchorHTMLAttributes<T extends EventTarget = HTMLAnchorElement>
   extends PartialAnchorHTMLAttributes<T> {
@@ -1656,8 +1568,7 @@ export interface AnchorHTMLAttributes<T extends EventTarget = HTMLAnchorElement>
   role?: RefOrValue<AriaRole | undefined>;
 }
 
-export interface PartialAreaHTMLAttributes<T extends EventTarget>
-  extends HTMLAttributes<T> {
+export interface PartialAreaHTMLAttributes<T extends EventTarget> extends HTMLAttributes<T> {
   alt?: RefOrValue<string | undefined>;
   coords?: RefOrValue<string | undefined>;
   download?: RefOrValue<any>;
@@ -1681,9 +1592,11 @@ export type AreaAriaRoles =
       role?: RefOrValue<"button" | "link" | undefined>;
     };
 
-export type AccessibleAreaHTMLAttributes<
-  T extends EventTarget = HTMLAreaElement
-> = Omit<PartialAreaHTMLAttributes<T>, "role"> & AreaAriaRoles;
+export type AccessibleAreaHTMLAttributes<T extends EventTarget = HTMLAreaElement> = Omit<
+  PartialAreaHTMLAttributes<T>,
+  "role"
+> &
+  AreaAriaRoles;
 
 export interface AreaHTMLAttributes<T extends EventTarget = HTMLAreaElement>
   extends PartialAreaHTMLAttributes<T> {
@@ -1738,14 +1651,12 @@ export interface BaseHTMLAttributes<T extends EventTarget = HTMLBaseElement>
   target?: RefOrValue<HTMLAttributeAnchorTarget | undefined>;
 }
 
-export interface BlockquoteHTMLAttributes<
-  T extends EventTarget = HTMLQuoteElement
-> extends HTMLAttributes<T> {
+export interface BlockquoteHTMLAttributes<T extends EventTarget = HTMLQuoteElement>
+  extends HTMLAttributes<T> {
   cite?: RefOrValue<string | undefined>;
 }
 
-export interface BrHTMLAttributes<T extends EventTarget = HTMLBRElement>
-  extends HTMLAttributes<T> {
+export interface BrHTMLAttributes<T extends EventTarget = HTMLBRElement> extends HTMLAttributes<T> {
   role?: RefOrValue<"none" | "presentation" | undefined>;
 }
 
@@ -1811,9 +1722,8 @@ export interface ColHTMLAttributes<T extends EventTarget = HTMLTableColElement>
   width?: RefOrValue<number | string | undefined>;
 }
 
-export interface ColgroupHTMLAttributes<
-  T extends EventTarget = HTMLTableColElement
-> extends HTMLAttributes<T> {
+export interface ColgroupHTMLAttributes<T extends EventTarget = HTMLTableColElement>
+  extends HTMLAttributes<T> {
   role?: never;
   span?: RefOrValue<number | undefined>;
 }
@@ -1823,14 +1733,12 @@ export interface DataHTMLAttributes<T extends EventTarget = HTMLDataElement>
   value?: RefOrValue<string | number | undefined>;
 }
 
-export interface DataListHTMLAttributes<
-  T extends EventTarget = HTMLDataListElement
-> extends HTMLAttributes<T> {
+export interface DataListHTMLAttributes<T extends EventTarget = HTMLDataListElement>
+  extends HTMLAttributes<T> {
   role?: RefOrValue<"listbox" | undefined>;
 }
 
-export interface DdHTMLAttributes<T extends EventTarget = HTMLElement>
-  extends HTMLAttributes<T> {
+export interface DdHTMLAttributes<T extends EventTarget = HTMLElement> extends HTMLAttributes<T> {
   role?: never;
 }
 
@@ -1841,9 +1749,8 @@ export interface DelHTMLAttributes<T extends EventTarget = HTMLModElement>
   dateTime?: RefOrValue<string | undefined>;
 }
 
-export interface DetailsHTMLAttributes<
-  T extends EventTarget = HTMLDetailsElement
-> extends HTMLAttributes<T> {
+export interface DetailsHTMLAttributes<T extends EventTarget = HTMLDetailsElement>
+  extends HTMLAttributes<T> {
   name?: RefOrValue<string | undefined>;
   open?: RefOrValue<boolean | undefined>;
   role?: RefOrValue<"group" | undefined>;
@@ -1864,31 +1771,25 @@ export interface DlHTMLAttributes<T extends EventTarget = HTMLDListElement>
   role?: RefOrValue<"group" | "list" | "none" | "presentation" | undefined>;
 }
 
-export interface DtHTMLAttributes<T extends EventTarget = HTMLElement>
-  extends HTMLAttributes<T> {
+export interface DtHTMLAttributes<T extends EventTarget = HTMLElement> extends HTMLAttributes<T> {
   role?: RefOrValue<"listitem" | undefined>;
 }
 
 export interface EmbedHTMLAttributes<T extends EventTarget = HTMLEmbedElement>
   extends HTMLAttributes<T> {
   height?: RefOrValue<number | string | undefined>;
-  role?: RefOrValue<
-    "application" | "document" | "img" | "none" | "presentation" | undefined
-  >;
+  role?: RefOrValue<"application" | "document" | "img" | "none" | "presentation" | undefined>;
   src?: RefOrValue<string | undefined>;
   type?: RefOrValue<string | undefined>;
   width?: RefOrValue<number | string | undefined>;
 }
 
-export interface FieldsetHTMLAttributes<
-  T extends EventTarget = HTMLFieldSetElement
-> extends HTMLAttributes<T> {
+export interface FieldsetHTMLAttributes<T extends EventTarget = HTMLFieldSetElement>
+  extends HTMLAttributes<T> {
   disabled?: RefOrValue<boolean | undefined>;
   form?: RefOrValue<string | undefined>;
   name?: RefOrValue<string | undefined>;
-  role?: RefOrValue<
-    "group" | "none" | "presentation" | "radiogroup" | undefined
-  >;
+  role?: RefOrValue<"group" | "none" | "presentation" | "radiogroup" | undefined>;
 }
 
 export interface FigcaptionHTMLAttributes<T extends EventTarget = HTMLElement>
@@ -1898,14 +1799,7 @@ export interface FigcaptionHTMLAttributes<T extends EventTarget = HTMLElement>
 
 export interface FooterHTMLAttributes<T extends EventTarget = HTMLElement>
   extends HTMLAttributes<T> {
-  role?: RefOrValue<
-    | "contentinfo"
-    | "group"
-    | "none"
-    | "presentation"
-    | "doc-footnote"
-    | undefined
-  >;
+  role?: RefOrValue<"contentinfo" | "group" | "none" | "presentation" | "doc-footnote" | undefined>;
 }
 
 export interface FormHTMLAttributes<T extends EventTarget = HTMLFormElement>
@@ -1926,12 +1820,9 @@ export interface FormHTMLAttributes<T extends EventTarget = HTMLFormElement>
   target?: RefOrValue<string | undefined>;
 }
 
-export interface HeadingHTMLAttributes<
-  T extends EventTarget = HTMLHeadingElement
-> extends HTMLAttributes<T> {
-  role?: RefOrValue<
-    "heading" | "none" | "presentation" | "tab" | "doc-subtitle" | undefined
-  >;
+export interface HeadingHTMLAttributes<T extends EventTarget = HTMLHeadingElement>
+  extends HTMLAttributes<T> {
+  role?: RefOrValue<"heading" | "none" | "presentation" | "tab" | "doc-subtitle" | undefined>;
 }
 
 export interface HeadHTMLAttributes<T extends EventTarget = HTMLHeadElement>
@@ -1944,11 +1835,8 @@ export interface HeaderHTMLAttributes<T extends EventTarget = HTMLElement>
   role?: RefOrValue<"banner" | "group" | "none" | "presentation" | undefined>;
 }
 
-export interface HrHTMLAttributes<T extends EventTarget = HTMLHRElement>
-  extends HTMLAttributes<T> {
-  role?: RefOrValue<
-    "separator" | "none" | "presentation" | "doc-pagebreak" | undefined
-  >;
+export interface HrHTMLAttributes<T extends EventTarget = HTMLHRElement> extends HTMLAttributes<T> {
+  role?: RefOrValue<"separator" | "none" | "presentation" | "doc-pagebreak" | undefined>;
 }
 
 export interface HtmlHTMLAttributes<T extends EventTarget = HTMLHtmlElement>
@@ -1974,9 +1862,7 @@ export interface IframeHTMLAttributes<T extends EventTarget = HTMLIFrameElement>
   name?: RefOrValue<string | undefined>;
   referrerpolicy?: RefOrValue<HTMLAttributeReferrerPolicy | undefined>;
   referrerPolicy?: RefOrValue<HTMLAttributeReferrerPolicy | undefined>;
-  role?: RefOrValue<
-    "application" | "document" | "img" | "none" | "presentation" | undefined
-  >;
+  role?: RefOrValue<"application" | "document" | "img" | "none" | "presentation" | undefined>;
   sandbox?: RefOrValue<string | undefined>;
   /** @deprecated */
   scrolling?: RefOrValue<string | undefined>;
@@ -1989,8 +1875,7 @@ export interface IframeHTMLAttributes<T extends EventTarget = HTMLIFrameElement>
 
 export type HTMLAttributeCrossOrigin = "anonymous" | "use-credentials";
 
-export interface PartialImgHTMLAttributes<T extends EventTarget>
-  extends HTMLAttributes<T> {
+export interface PartialImgHTMLAttributes<T extends EventTarget> extends HTMLAttributes<T> {
   crossorigin?: RefOrValue<HTMLAttributeCrossOrigin>;
   crossOrigin?: RefOrValue<HTMLAttributeCrossOrigin>;
   decoding?: RefOrValue<"async" | "auto" | "sync" | undefined>;
@@ -2056,9 +1941,7 @@ export type ImgAriaRoles =
       role?: RefOrValue<"img" | "none" | "presentation" | undefined>;
     };
 
-export type AccessibleImgHTMLAttributes<
-  T extends EventTarget = HTMLImageElement
-> = Omit<
+export type AccessibleImgHTMLAttributes<T extends EventTarget = HTMLImageElement> = Omit<
   PartialImgHTMLAttributes<T>,
   "role" | "aria-label" | "aria-labelledby" | "title"
 > &
@@ -2070,9 +1953,7 @@ export interface ImgHTMLAttributes<T extends EventTarget = HTMLImageElement>
   "aria-label"?: RefOrValue<string | undefined>;
   "aria-labelledby"?: RefOrValue<string | undefined>;
   href?: RefOrValue<string | undefined>;
-  role?:
-    | ImgAriaRolesAccessibleName
-    | RefOrValue<"img" | "none" | "presentation" | undefined>;
+  role?: ImgAriaRolesAccessibleName | RefOrValue<"img" | "none" | "presentation" | undefined>;
   title?: RefOrValue<string | undefined>;
 }
 
@@ -2100,8 +1981,7 @@ export type HTMLInputTypeAttribute =
   | "url"
   | "week";
 
-export interface PartialInputHTMLAttributes<T extends EventTarget>
-  extends HTMLAttributes<T> {
+export interface PartialInputHTMLAttributes<T extends EventTarget> extends HTMLAttributes<T> {
   accept?: RefOrValue<string | undefined>;
   alt?: RefOrValue<string | undefined>;
   autocomplete?: RefOrValue<string | undefined>;
@@ -2112,14 +1992,7 @@ export interface PartialInputHTMLAttributes<T extends EventTarget>
   defaultValue?: RefOrValue<string | number | undefined>;
   disabled?: RefOrValue<boolean | undefined>;
   enterKeyHint?: RefOrValue<
-    | "enter"
-    | "done"
-    | "go"
-    | "next"
-    | "previous"
-    | "search"
-    | "send"
-    | undefined
+    "enter" | "done" | "go" | "next" | "previous" | "search" | "send" | undefined
   >;
   form?: RefOrValue<string | undefined>;
   formaction?: RefOrValue<string | undefined>;
@@ -2180,12 +2053,7 @@ export type InputAriaRoles =
   | {
       type: RefOrValue<"checkbox">;
       role?: RefOrValue<
-        | "checkbox"
-        | "button"
-        | "menuitemcheckbox"
-        | "option"
-        | "switch"
-        | undefined
+        "checkbox" | "button" | "menuitemcheckbox" | "option" | "switch" | undefined
       >;
     }
   | {
@@ -2279,9 +2147,7 @@ export type InputAriaRoles =
   | {
       type?: RefOrValue<"text">;
       list?: never;
-      role?: RefOrValue<
-        "textbox" | "combobox" | "searchbox" | "spinbutton" | undefined
-      >;
+      role?: RefOrValue<"textbox" | "combobox" | "searchbox" | "spinbutton" | undefined>;
     }
   | {
       type?: RefOrValue<"text" | "search" | "tel" | "url" | "email">;
@@ -2308,9 +2174,11 @@ export type InputAriaRoles =
       role?: never;
     };
 
-export type AccessibleInputHTMLAttributes<
-  T extends EventTarget = HTMLInputElement
-> = Omit<PartialInputHTMLAttributes<T>, "role"> & InputAriaRoles;
+export type AccessibleInputHTMLAttributes<T extends EventTarget = HTMLInputElement> = Omit<
+  PartialInputHTMLAttributes<T>,
+  "role"
+> &
+  InputAriaRoles;
 
 export interface InputHTMLAttributes<T extends EventTarget = HTMLInputElement>
   extends PartialInputHTMLAttributes<T> {
@@ -2345,9 +2213,8 @@ export interface InsHTMLAttributes<T extends EventTarget = HTMLModElement>
   dateTime?: RefOrValue<string | undefined>;
 }
 
-export interface KeygenHTMLAttributes<
-  T extends EventTarget = HTMLUnknownElement
-> extends HTMLAttributes<T> {
+export interface KeygenHTMLAttributes<T extends EventTarget = HTMLUnknownElement>
+  extends HTMLAttributes<T> {
   challenge?: RefOrValue<string | undefined>;
   disabled?: RefOrValue<boolean | undefined>;
   form?: RefOrValue<string | undefined>;
@@ -2369,8 +2236,7 @@ export interface LegendHTMLAttributes<T extends EventTarget = HTMLLegendElement>
   role?: never;
 }
 
-export interface LiHTMLAttributes<T extends EventTarget = HTMLLIElement>
-  extends HTMLAttributes<T> {
+export interface LiHTMLAttributes<T extends EventTarget = HTMLLIElement> extends HTMLAttributes<T> {
   value?: RefOrValue<string | number | undefined>;
 }
 
@@ -2397,8 +2263,7 @@ export interface LinkHTMLAttributes<T extends EventTarget = HTMLLinkElement>
   charSet?: RefOrValue<string | undefined>;
 }
 
-export interface MainHTMLAttributes<T extends EventTarget = HTMLElement>
-  extends HTMLAttributes<T> {
+export interface MainHTMLAttributes<T extends EventTarget = HTMLElement> extends HTMLAttributes<T> {
   role?: RefOrValue<"main" | undefined>;
 }
 
@@ -2408,9 +2273,8 @@ export interface MapHTMLAttributes<T extends EventTarget = HTMLMapElement>
   role?: never;
 }
 
-export interface MarqueeHTMLAttributes<
-  T extends EventTarget = HTMLMarqueeElement
-> extends HTMLAttributes<T> {
+export interface MarqueeHTMLAttributes<T extends EventTarget = HTMLMarqueeElement>
+  extends HTMLAttributes<T> {
   behavior?: RefOrValue<"scroll" | "slide" | "alternate" | undefined>;
   bgColor?: RefOrValue<string | undefined>;
   direction?: RefOrValue<"left" | "right" | "up" | "down" | undefined>;
@@ -2490,16 +2354,9 @@ export interface MeterHTMLAttributes<T extends EventTarget = HTMLMeterElement>
   value?: RefOrValue<string | number | undefined>;
 }
 
-export interface NavHTMLAttributes<T extends EventTarget = HTMLElement>
-  extends HTMLAttributes<T> {
+export interface NavHTMLAttributes<T extends EventTarget = HTMLElement> extends HTMLAttributes<T> {
   role?: RefOrValue<
-    | "navigation"
-    | "menu"
-    | "menubar"
-    | "none"
-    | "presentation"
-    | "tablist"
-    | undefined
+    "navigation" | "menu" | "menubar" | "none" | "presentation" | "tablist" | undefined
   >;
 }
 
@@ -2544,9 +2401,8 @@ export interface OlHTMLAttributes<T extends EventTarget = HTMLOListElement>
   type?: RefOrValue<"1" | "a" | "A" | "i" | "I" | undefined>;
 }
 
-export interface OptgroupHTMLAttributes<
-  T extends EventTarget = HTMLOptGroupElement
-> extends HTMLAttributes<T> {
+export interface OptgroupHTMLAttributes<T extends EventTarget = HTMLOptGroupElement>
+  extends HTMLAttributes<T> {
   disabled?: RefOrValue<boolean | undefined>;
   label?: RefOrValue<string | undefined>;
   role?: RefOrValue<"group" | undefined>;
@@ -2576,15 +2432,13 @@ export interface ParamHTMLAttributes<T extends EventTarget = HTMLParamElement>
   value?: RefOrValue<string | number | undefined>;
 }
 
-export interface PictureHTMLAttributes<
-  T extends EventTarget = HTMLPictureElement
-> extends HTMLAttributes<T> {
+export interface PictureHTMLAttributes<T extends EventTarget = HTMLPictureElement>
+  extends HTMLAttributes<T> {
   role?: never;
 }
 
-export interface ProgressHTMLAttributes<
-  T extends EventTarget = HTMLProgressElement
-> extends HTMLAttributes<T> {
+export interface ProgressHTMLAttributes<T extends EventTarget = HTMLProgressElement>
+  extends HTMLAttributes<T> {
   max?: RefOrValue<number | string | undefined>;
   role?: RefOrValue<"progressbar" | undefined>;
   value?: RefOrValue<string | number | undefined>;
@@ -2617,13 +2471,10 @@ export interface ScriptHTMLAttributes<T extends EventTarget = HTMLScriptElement>
 
 export interface SearchHTMLAttributes<T extends EventTarget = HTMLElement>
   extends HTMLAttributes<T> {
-  role?: RefOrValue<
-    "search" | "form" | "group" | "none" | "presentation" | "region" | undefined
-  >;
+  role?: RefOrValue<"search" | "form" | "group" | "none" | "presentation" | "region" | undefined>;
 }
 
-export interface PartialSelectHTMLAttributes<T extends EventTarget>
-  extends HTMLAttributes<T> {
+export interface PartialSelectHTMLAttributes<T extends EventTarget> extends HTMLAttributes<T> {
   autocomplete?: RefOrValue<string | undefined>;
   autoComplete?: RefOrValue<string | undefined>;
   defaultValue?: RefOrValue<string | number | undefined>;
@@ -2650,9 +2501,11 @@ export type SelectAriaRoles =
       role?: RefOrValue<"listbox" | undefined>;
     };
 
-export type AccessibleSelectHTMLAttributes<
-  T extends EventTarget = HTMLSelectElement
-> = Omit<PartialSelectHTMLAttributes<T>, "role"> & SelectAriaRoles;
+export type AccessibleSelectHTMLAttributes<T extends EventTarget = HTMLSelectElement> = Omit<
+  PartialSelectHTMLAttributes<T>,
+  "role"
+> &
+  SelectAriaRoles;
 
 export interface SelectHTMLAttributes<T extends EventTarget = HTMLSelectElement>
   extends PartialSelectHTMLAttributes<T> {
@@ -2699,9 +2552,7 @@ export interface TableHTMLAttributes<T extends EventTarget = HTMLTableElement>
 
 export interface TdHTMLAttributes<T extends EventTarget = HTMLTableCellElement>
   extends HTMLAttributes<T> {
-  align?: RefOrValue<
-    "left" | "center" | "right" | "justify" | "char" | undefined
-  >;
+  align?: RefOrValue<"left" | "center" | "right" | "justify" | "char" | undefined>;
   colspan?: RefOrValue<number | undefined>;
   colSpan?: RefOrValue<number | undefined>;
   headers?: RefOrValue<string | undefined>;
@@ -2714,15 +2565,13 @@ export interface TdHTMLAttributes<T extends EventTarget = HTMLTableCellElement>
   valign?: RefOrValue<"top" | "middle" | "bottom" | "baseline" | undefined>;
 }
 
-export interface TemplateHTMLAttributes<
-  T extends EventTarget = HTMLTemplateElement
-> extends HTMLAttributes<T> {
+export interface TemplateHTMLAttributes<T extends EventTarget = HTMLTemplateElement>
+  extends HTMLAttributes<T> {
   role?: never;
 }
 
-export interface TextareaHTMLAttributes<
-  T extends EventTarget = HTMLTextAreaElement
-> extends HTMLAttributes<T> {
+export interface TextareaHTMLAttributes<T extends EventTarget = HTMLTextAreaElement>
+  extends HTMLAttributes<T> {
   autocomplete?: RefOrValue<string | undefined>;
   autoComplete?: RefOrValue<string | undefined>;
   cols?: RefOrValue<number | undefined>;
@@ -2747,9 +2596,7 @@ export interface TextareaHTMLAttributes<
 
 export interface ThHTMLAttributes<T extends EventTarget = HTMLTableCellElement>
   extends HTMLAttributes<T> {
-  align?: RefOrValue<
-    "left" | "center" | "right" | "justify" | "char" | undefined
-  >;
+  align?: RefOrValue<"left" | "center" | "right" | "justify" | "char" | undefined>;
   colspan?: RefOrValue<number | undefined>;
   colSpan?: RefOrValue<number | undefined>;
   headers?: RefOrValue<string | undefined>;
@@ -2809,14 +2656,13 @@ export interface VideoHTMLAttributes<T extends EventTarget = HTMLVideoElement>
   role?: RefOrValue<"application" | undefined>;
 }
 
-export interface WbrHTMLAttributes<T extends EventTarget = HTMLElement>
-  extends HTMLAttributes<T> {
+export interface WbrHTMLAttributes<T extends EventTarget = HTMLElement> extends HTMLAttributes<T> {
   role?: RefOrValue<"none" | "presentation" | undefined>;
 }
 
 export type DetailedHTMLProps<
   HA extends HTMLAttributes<RefType>,
-  RefType extends EventTarget = EventTarget
+  RefType extends EventTarget = EventTarget,
 > = HA;
 
 export interface MathMLAttributes<Target extends EventTarget = MathMLElement>
@@ -2835,50 +2681,42 @@ export interface MathMLAttributes<Target extends EventTarget = MathMLElement>
   scriptlevel?: RefOrValue<string | undefined>;
 }
 
-export interface AnnotationMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface AnnotationMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   encoding?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/semantics#src */
   src?: RefOrValue<string | undefined>;
 }
 
-export interface AnnotationXmlMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface AnnotationXmlMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   encoding?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/semantics#src */
   src?: RefOrValue<string | undefined>;
 }
 
-export interface MActionMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MActionMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/maction#actiontype */
   actiontype?: RefOrValue<"statusline" | "toggle" | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/maction#selection */
   selection?: RefOrValue<string | undefined>;
 }
 
-export interface MathMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MathMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   display?: RefOrValue<"block" | "inline" | undefined>;
 }
 
-export interface MEncloseMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MEncloseMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   notation?: RefOrValue<string | undefined>;
 }
 
-export interface MErrorMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MErrorMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MFencedMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MFencedMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   close?: RefOrValue<string | undefined>;
   open?: RefOrValue<string | undefined>;
   separators?: RefOrValue<string | undefined>;
 }
 
-export interface MFracMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MFracMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mfrac#denomalign */
   denomalign?: RefOrValue<"center" | "left" | "right" | undefined>;
   linethickness?: RefOrValue<string | undefined>;
@@ -2886,8 +2724,7 @@ export interface MFracMathMLAttributes<T extends EventTarget>
   numalign?: RefOrValue<"center" | "left" | "right" | undefined>;
 }
 
-export interface MiMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MiMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** The only value allowed in the current specification is normal (case insensitive)
    * See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mi#mathvariant */
   mathvariant?: RefOrValue<
@@ -2913,19 +2750,16 @@ export interface MiMathMLAttributes<T extends EventTarget>
   >;
 }
 
-export interface MmultiScriptsMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MmultiScriptsMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mmultiscripts#subscriptshift */
   subscriptshift?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mmultiscripts#superscriptshift */
   superscriptshift?: RefOrValue<string | undefined>;
 }
 
-export interface MNMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MNMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MOMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MOMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mo#accent */
   accent?: RefOrValue<boolean | undefined>;
   fence?: RefOrValue<boolean | undefined>;
@@ -2940,13 +2774,11 @@ export interface MOMathMLAttributes<T extends EventTarget>
   symmetric?: RefOrValue<boolean | undefined>;
 }
 
-export interface MOverMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MOverMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   accent?: RefOrValue<boolean | undefined>;
 }
 
-export interface MPaddedMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MPaddedMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   depth?: RefOrValue<string | undefined>;
   height?: RefOrValue<string | undefined>;
   lspace?: RefOrValue<string | undefined>;
@@ -2954,38 +2786,30 @@ export interface MPaddedMathMLAttributes<T extends EventTarget>
   width?: RefOrValue<string | undefined>;
 }
 
-export interface MPhantomMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MPhantomMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MPrescriptsMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MPrescriptsMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MRootMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MRootMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MRowMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MRowMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MSMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MSMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/ms#browser_compatibility */
   lquote?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/ms#browser_compatibility */
   rquote?: RefOrValue<string | undefined>;
 }
 
-export interface MSpaceMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MSpaceMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   depth?: RefOrValue<string | undefined>;
   height?: RefOrValue<string | undefined>;
   width?: RefOrValue<string | undefined>;
 }
 
-export interface MSqrtMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MSqrtMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MStyleMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MStyleMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mstyle#background */
   background?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mstyle#color */
@@ -3002,32 +2826,26 @@ export interface MStyleMathMLAttributes<T extends EventTarget>
   scriptsizemultiplier?: RefOrValue<string | undefined>;
 }
 
-export interface MSubMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MSubMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/msub#subscriptshift */
   subscriptshift?: RefOrValue<string | undefined>;
 }
 
-export interface MSubsupMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MSubsupMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/msubsup#subscriptshift */
   subscriptshift?: RefOrValue<string | undefined>;
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/msubsup#superscriptshift */
   superscriptshift?: RefOrValue<string | undefined>;
 }
 
-export interface MSupMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MSupMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/msup#superscriptshift */
   superscriptshift?: RefOrValue<string | undefined>;
 }
 
-export interface MTableMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MTableMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#align */
-  align?: RefOrValue<
-    "axis" | "baseline" | "bottom" | "center" | "top" | undefined
-  >;
+  align?: RefOrValue<"axis" | "baseline" | "bottom" | "center" | "top" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#columnalign */
   columnalign?: RefOrValue<"center" | "left" | "right" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#columnlines */
@@ -3039,9 +2857,7 @@ export interface MTableMathMLAttributes<T extends EventTarget>
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#framespacing */
   framespacing?: RefOrValue<string | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#rowalign */
-  rowalign?: RefOrValue<
-    "axis" | "baseline" | "bottom" | "center" | "top" | undefined
-  >;
+  rowalign?: RefOrValue<"axis" | "baseline" | "bottom" | "center" | "top" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#rowlines */
   rowlines?: RefOrValue<"dashed" | "none" | "solid" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtable#rowspacing */
@@ -3050,41 +2866,31 @@ export interface MTableMathMLAttributes<T extends EventTarget>
   width?: RefOrValue<string | undefined>;
 }
 
-export interface MTdMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MTdMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   columnspan?: RefOrValue<number | undefined>;
   rowspan?: RefOrValue<number | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtd#columnalign */
   columnalign?: RefOrValue<"center" | "left" | "right" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtd#rowalign */
-  rowalign?: RefOrValue<
-    "axis" | "baseline" | "bottom" | "center" | "top" | undefined
-  >;
+  rowalign?: RefOrValue<"axis" | "baseline" | "bottom" | "center" | "top" | undefined>;
 }
 
-export interface MTextMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface MTextMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}
 
-export interface MTrMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MTrMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtr#columnalign */
   columnalign?: RefOrValue<"center" | "left" | "right" | undefined>;
   /** Non-standard attribute See https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mtr#rowalign */
-  rowalign?: RefOrValue<
-    "axis" | "baseline" | "bottom" | "center" | "top" | undefined
-  >;
+  rowalign?: RefOrValue<"axis" | "baseline" | "bottom" | "center" | "top" | undefined>;
 }
 
-export interface MUnderMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MUnderMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   accentunder?: RefOrValue<boolean | undefined>;
 }
 
-export interface MUnderoverMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {
+export interface MUnderoverMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {
   accent?: RefOrValue<boolean | undefined>;
   accentunder?: RefOrValue<boolean | undefined>;
 }
 
-export interface SemanticsMathMLAttributes<T extends EventTarget>
-  extends MathMLAttributes<T> {}
+export interface SemanticsMathMLAttributes<T extends EventTarget> extends MathMLAttributes<T> {}

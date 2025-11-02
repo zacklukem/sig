@@ -5,18 +5,10 @@ import type { FunctionComponent, VNode } from "./types";
 export function h<T extends keyof JSX.IntrinsicElements>(
   type: T,
   props: JSX.IntrinsicElements[T],
-  key?: unknown
+  key?: unknown,
 ): VNode<JSX.IntrinsicElements[T]>;
-export function h<P extends object>(
-  type: FunctionComponent<P>,
-  props: P,
-  key?: unknown
-): VNode<P>;
-export function h(
-  type: string | FunctionComponent<unknown>,
-  props: object,
-  key?: unknown
-): VNode {
+export function h<P extends object>(type: FunctionComponent<P>, props: P, key?: unknown): VNode<P>;
+export function h(type: string | FunctionComponent<unknown>, props: object, key?: unknown): VNode {
   return {
     [vnodeBrand]: true,
     type,

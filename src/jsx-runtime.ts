@@ -5,9 +5,7 @@ export { h as jsx, h as jsxs, h as jsxDEV } from "./h";
 
 export namespace JSX {
   export type Element = VNode;
-  export type ElementType<P = any> =
-    | FunctionComponent<P>
-    | keyof IntrinsicElements;
+  export type ElementType<P = any> = FunctionComponent<P> | keyof IntrinsicElements;
 
   export interface IntrinsicAttributes {
     key?: any;
