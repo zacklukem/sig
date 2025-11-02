@@ -2,10 +2,14 @@ import "global-jsdom/register";
 import { signal, render, computed } from "sig";
 const value = signal(0);
 
+function Text(props: { value: number }) {
+  return () => <div>{props.value}</div>;
+}
+
 function Other() {
   const valuePlusOne = computed(() => value.$ + 1);
 
-  return () => <p>{valuePlusOne.$}</p>;
+  return () => <Text value={valuePlusOne.$} />;
 }
 
 function Counter() {

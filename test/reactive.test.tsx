@@ -20,3 +20,24 @@ test("reacts to events", async () => {
   value.$ = 4321;
   await waitFor(() => expect(valueElement?.textContent).toBe("4321"));
 });
+
+test("reacts to prop updates", async () => {
+  const value = signal(0);
+
+  function ComponentWithProps(props: { value: number }) {
+    return () => <div id="value">{props.value}</div>;
+  }
+
+  function Component() {
+    return () => <ComponentWithProps value={value.$} />;
+  }
+
+  render(<Component />);
+  const valueElement = document.getElementById("value");
+
+  expect(valueElement?.textContent).toBe("0");
+  value.$ = 1234;
+  await waitFor(() => expect(valueElement?.textContent).toBe("1234"));
+  value.$ = 4321;
+  await waitFor(() => expect(valueElement?.textContent).toBe("4321"));
+});

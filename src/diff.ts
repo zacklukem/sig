@@ -189,6 +189,22 @@ function rerenderTask() {
   watchState.updated = new Map();
 }
 
+function buildReactiveObject(): object {
+  return new Proxy({} as Record<string | symbol, Signal.State<unknown>>, {
+    set(target, p, v) {
+      if (p in target) {
+        target[p]!.set(v);
+      } else {
+        target[p] = new Signal.State(v);
+      }
+      return true;
+    },
+    get(target, p) {
+      return target[p]?.get();
+    },
+  });
+}
+
 export function diff(
   parentDom: SigNode,
   newNode: VNode,
@@ -198,16 +214,28 @@ export function diff(
   if (typeof newNode.type === "function") {
     const component = newNode.type;
 
-    // TODO: handle props persistance
-    const props = Object.assign({}, newNode.props);
-
+    let props: object;
     let renderSignal: RenderSignal;
     if (oldNode) {
       renderSignal = oldNode.renderSignal!;
+      oldNode.watcher?.unwatch(renderSignal);
+
+      props = oldNode.props;
+
+      // TODO: remove old prop keys
+      Object.assign(props, newNode.props);
     } else {
+      props = buildReactiveObject();
+
+      // TODO: remove old prop keys
+      Object.assign(props, newNode.props);
+
+      // TODO: watch for hooks
       const renderFn = component(props);
 
-      renderSignal = new Signal.Computed(() => normalizeChildren(renderFn()));
+      renderSignal = new Signal.Computed(() => {
+        return normalizeChildren(renderFn());
+      });
     }
 
     const newChildren = renderSignal.get();
@@ -221,7 +249,6 @@ export function diff(
       key: newNode.key,
     };
 
-    renderedNode.watcher?.unwatch(renderSignal);
     renderedNode.watcher = new Signal.subtle.Watcher(() => {
       watchState.updated.set(renderedNode, {
         parentDom,
