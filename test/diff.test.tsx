@@ -1,13 +1,5 @@
-import { beforeEach, expect, test } from "bun:test";
+import { expect, test } from "bun:test";
 import { diff } from "sig";
-
-function resetDom() {
-  document.body.childNodes.forEach((item) => item.remove());
-}
-
-beforeEach(() => {
-  resetDom();
-});
 
 function MyComponent() {
   return () => <span></span>;
@@ -51,15 +43,14 @@ test.each([
     ),
   },
 ])("initial and updated diffs produce same result", ({ initial, updated }) => {
-  diff(document.body, updated);
-  const expected = document.body.innerHTML;
-  resetDom();
+  const expectedNode = document.createElement("main");
+  diff(expectedNode, updated);
+  const expected = expectedNode.innerHTML;
 
-  const prev = diff(document.body, initial);
-  diff(document.body, updated, prev);
-
-  const actual = document.body.innerHTML;
-  resetDom();
+  const actualNode = document.createElement("main");
+  const prev = diff(actualNode, initial);
+  diff(actualNode, updated, prev);
+  const actual = actualNode.innerHTML;
 
   expect(actual).toBe(expected);
 });
