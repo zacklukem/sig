@@ -1,26 +1,29 @@
 import "global-jsdom/register";
-import { signal } from "sig";
+import { signal, render } from "sig";
+const value = signal(0);
 
-function Counter(props: { a: number }) {
-  const x = signal(props.a);
-
-  return () => <button onClick={() => (x.$ += 1)}>Count: {x}</button>;
+function Other() {
+  return () => <p>{value.$}</p>;
 }
 
-export const a = (
-  <div class="test">
-    <Counter a={2} />
-  </div>
-);
+function Counter() {
+  // TODO: fix bug where it doesn't work to pass direct reference
+  return () => (
+    <div>
+      {value.$}
+      <Other />
+    </div>
+  );
+}
 
-export const b = (
-  <div class="test">
-    <p>hi</p>
-    <Counter a={2} />
-  </div>
-);
+render(document.body, <Counter />);
 
-// const prev = diff(document.body, a);
-// diff(document.body, b, prev);
+console.log(document.body.outerHTML);
 
+value.$ += 1;
+await new Promise((resolve) => setTimeout(resolve, 1));
+console.log(document.body.outerHTML);
+
+value.$ += 1;
+await new Promise((resolve) => setTimeout(resolve, 1));
 console.log(document.body.outerHTML);

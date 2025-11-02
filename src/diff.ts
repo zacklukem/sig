@@ -3,6 +3,7 @@ import { deref } from "./ref";
 import { diffArrays } from "diff";
 import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
 import { initSigDom, SigDom } from "./sig-dom";
+import { Signal } from "signal-polyfill";
 
 const textNodeType = "text";
 
@@ -22,12 +23,16 @@ function normalizeChildren(children: ComponentChildren): NormalComponentChild[] 
 
 type SigNode = SigDom<ChildNode>;
 
+type RenderSignal = Signal.Computed<NormalComponentChild[]>;
+
 type RenderedNode = {
   type: string | object;
+  renderSignal?: RenderSignal;
   dom: SigNode;
   props: object;
   children: RenderedNode[];
   key?: unknown;
+  watcher?: Signal.subtle.Watcher;
 };
 
 function insertNode(parentDom: SigNode, node: SigNode, nextSibling: SigNode | undefined) {
@@ -142,6 +147,38 @@ function updateAttributes(props: object, el: SigDom<Element>) {
   }
 }
 
+// TODO: move to shared state
+const watchState = {
+  updated: new Map<
+    RenderedNode,
+    {
+      parentDom: SigNode;
+      vnode: VNode;
+      renderedNode: RenderedNode;
+      nextSibling: SigNode | undefined;
+    }
+  >(),
+};
+
+function rerenderTask() {
+  function filterNonRootNodes(node: RenderedNode) {
+    // TODO: benchmark and think about algorithm performance
+    node.children.forEach((child) => {
+      watchState.updated.delete(child);
+      filterNonRootNodes(child);
+    });
+  }
+
+  Array.from(watchState.updated.keys()).forEach(filterNonRootNodes);
+
+  watchState.updated.values().forEach(({ parentDom, vnode, renderedNode, nextSibling }) => {
+    diff(parentDom, vnode, renderedNode, nextSibling);
+    console.log("Updated");
+  });
+
+  watchState.updated = new Map();
+}
+
 export function diff(
   parentDom: SigNode,
   newNode: VNode,
@@ -151,20 +188,46 @@ export function diff(
   if (typeof newNode.type === "function") {
     const component = newNode.type;
 
+    // TODO: handle props persistance
     const props = Object.assign({}, newNode.props);
-    const renderFn = component(props);
 
-    // todo: watch
-    const newChildren = normalizeChildren(renderFn());
-    // endwatch
+    let renderSignal: RenderSignal;
+    if (oldNode) {
+      renderSignal = oldNode.renderSignal!;
+    } else {
+      const renderFn = component(props);
 
-    return {
+      renderSignal = new Signal.Computed(() => normalizeChildren(renderFn()));
+    }
+
+    const newChildren = renderSignal.get();
+
+    const renderedNode: RenderedNode = {
       type: newNode.type,
       dom: parentDom,
       props,
       children: diffChildren(parentDom, newChildren, oldNode?.children ?? [], nextSibling),
+      renderSignal: renderSignal,
       key: newNode.key,
     };
+
+    // TODO: handle cleanup
+    renderedNode.watcher?.unwatch(renderSignal);
+    const watcher = new Signal.subtle.Watcher(() => {
+      watchState.updated.set(renderedNode, {
+        parentDom,
+        vnode: newNode,
+        renderedNode,
+        nextSibling,
+      });
+
+      if (watchState.updated.size === 1) {
+        queueMicrotask(rerenderTask);
+      }
+    });
+    watcher.watch(renderSignal);
+
+    return renderedNode;
   } else {
     // @ts-expect-error children may be undefined
     const { children: rawChildren, ...props } = newNode.props;
