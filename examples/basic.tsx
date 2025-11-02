@@ -1,5 +1,5 @@
 import "global-jsdom/register";
-import { signal, diff } from "sig";
+import { signal } from "sig";
 
 function Counter(props: { a: number }) {
   const x = signal(props.a);
@@ -20,7 +20,7 @@ export const b = (
   </div>
 );
 
-const prev = diff(document.body, a);
-diff(document.body, b, prev);
+// const prev = diff(document.body, a);
+// diff(document.body, b, prev);
 
 console.log(document.body.outerHTML);

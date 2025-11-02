@@ -2,6 +2,7 @@ import { isVNode } from "./brands";
 import { deref } from "./ref";
 import { diffArrays } from "diff";
 import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
+import { initSigDom, SigDom } from "./sig-dom";
 
 const textNodeType = "text";
 
@@ -19,15 +20,17 @@ function normalizeChildren(children: ComponentChildren): NormalComponentChild[] 
   }
 }
 
+type SigNode = SigDom<ChildNode>;
+
 type RenderedNode = {
   type: string | object;
-  dom: ChildNode;
+  dom: SigNode;
   props: object;
   children: RenderedNode[];
   key?: unknown;
 };
 
-function insertNode(parentDom: ChildNode, node: ChildNode, nextSibling: ChildNode | undefined) {
+function insertNode(parentDom: SigNode, node: SigNode, nextSibling: SigNode | undefined) {
   if (nextSibling) {
     parentDom.insertBefore(node, nextSibling);
   } else {
@@ -36,22 +39,22 @@ function insertNode(parentDom: ChildNode, node: ChildNode, nextSibling: ChildNod
 }
 
 function diffChild(
-  parentDom: ChildNode,
+  parentDom: SigNode,
   newChild: NormalComponentChild,
   oldChild: RenderedNode | undefined,
-  nextSibling: ChildNode | undefined
+  nextSibling: SigNode | undefined
 ): RenderedNode {
   if (isVNode(newChild)) {
     return diff(parentDom, newChild, oldChild, nextSibling);
   } else {
     const value = newChild.toString();
-    let textNode: Text;
+    let textNode: SigDom<Text>;
 
     if (oldChild) {
-      textNode = oldChild.dom as Text;
+      textNode = oldChild.dom as SigDom<Text>;
       textNode.nodeValue = value;
     } else {
-      textNode = document.createTextNode(value);
+      textNode = initSigDom(document.createTextNode(value));
       insertNode(parentDom, textNode, nextSibling);
     }
 
@@ -77,10 +80,10 @@ function childKey(child: NormalComponentChild): string | symbol | object {
 }
 
 function diffChildren(
-  parentDom: ChildNode,
+  parentDom: SigNode,
   newChildren: NormalComponentChild[],
   oldChildren: RenderedNode[],
-  nextSibling: ChildNode | undefined
+  nextSibling: SigNode | undefined
 ): RenderedNode[] {
   const output: RenderedNode[] = [];
   const oldKeys = oldChildren.map(nodeKey);
@@ -109,11 +112,41 @@ function diffChildren(
   return output;
 }
 
+function updateAttributes(props: object, el: SigDom<Element>) {
+  for (const [key, value] of Object.entries(props)) {
+    // TODO: inline styles
+    if (key.startsWith("on")) {
+      const eventName = key.slice(2).toLowerCase();
+      const oldValue = el[SigDom.listeners][eventName];
+
+      if (oldValue !== value) {
+        if (typeof oldValue === "function") {
+          // @ts-expect-error its a function
+          el.removeEventListener(eventName, oldValue);
+        }
+        if (typeof value === "function") {
+          el.addEventListener(eventName, value);
+        }
+      }
+
+      el[SigDom.listeners][eventName] = value;
+    } else {
+      if (typeof value === "function") {
+        // never serialize functions as attribute values
+      } else if (value != null && (value !== false || key[4] == "-")) {
+        el.setAttribute(key, key == "popover" && value == true ? "" : value);
+      } else {
+        el.removeAttribute(key);
+      }
+    }
+  }
+}
+
 export function diff(
-  parentDom: ChildNode,
+  parentDom: SigNode,
   newNode: VNode,
   oldNode?: RenderedNode,
-  nextSibling?: ChildNode
+  nextSibling?: SigNode
 ): RenderedNode {
   if (typeof newNode.type === "function") {
     const component = newNode.type;
@@ -137,20 +170,16 @@ export function diff(
     const { children: rawChildren, ...props } = newNode.props;
     const newChildren = normalizeChildren(rawChildren);
 
-    let el: ChildNode;
+    let el: SigDom<Element>;
 
     {
       if (oldNode) {
-        el = oldNode.dom;
+        el = oldNode.dom as SigDom<Element>;
       } else {
-        el = document.createElement(newNode.type);
+        el = initSigDom(document.createElement(newNode.type));
       }
 
-      // TODO: diff attributes?
-      for (const [key, value] of Object.entries(props)) {
-        // @ts-expect-error TODO: do better and handle event listeners
-        el.setAttribute(key, value);
-      }
+      updateAttributes(props, el);
 
       if (!oldNode) {
         insertNode(parentDom, el, nextSibling);

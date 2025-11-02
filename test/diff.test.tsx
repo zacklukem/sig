@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { diff } from "sig";
+import { initSigDom } from "../src/sig-dom";
 
 function MyComponent() {
   return () => <span></span>;
@@ -43,11 +44,11 @@ test.each([
     ),
   },
 ])("initial and updated diffs produce same result", ({ initial, updated }) => {
-  const expectedNode = document.createElement("main");
+  const expectedNode = initSigDom(document.createElement("main"));
   diff(expectedNode, updated);
   const expected = expectedNode.innerHTML;
 
-  const actualNode = document.createElement("main");
+  const actualNode = initSigDom(document.createElement("main"));
   const prev = diff(actualNode, initial);
   diff(actualNode, updated, prev);
   const actual = actualNode.innerHTML;
