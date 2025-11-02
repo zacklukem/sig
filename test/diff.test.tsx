@@ -9,6 +9,10 @@ beforeEach(() => {
   resetDom();
 });
 
+function MyComponent() {
+  return () => <span></span>;
+}
+
 test.each([
   {
     initial: <div></div>,
@@ -32,19 +36,30 @@ test.each([
       </div>
     ),
   },
-])(
-  "should render diff correctly for %initial and %updated",
-  ({ initial, updated }) => {
-    diff(document.body, updated);
-    const expected = document.body.innerHTML;
-    resetDom();
 
-    const prev = diff(document.body, initial);
-    diff(document.body, updated, prev);
+  {
+    initial: (
+      <div>
+        <span></span>
+      </div>
+    ),
+    updated: (
+      <div>
+        <p></p>
+        <MyComponent />
+      </div>
+    ),
+  },
+])("initial and updated diffs produce same result", ({ initial, updated }) => {
+  diff(document.body, updated);
+  const expected = document.body.innerHTML;
+  resetDom();
 
-    const actual = document.body.innerHTML;
-    resetDom();
+  const prev = diff(document.body, initial);
+  diff(document.body, updated, prev);
 
-    expect(actual).toBe(expected);
-  }
-);
+  const actual = document.body.innerHTML;
+  resetDom();
+
+  expect(actual).toBe(expected);
+});
