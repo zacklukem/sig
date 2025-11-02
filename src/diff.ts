@@ -35,35 +35,35 @@ type RenderedNode = {
 };
 
 function insertNode(
-  dom: ChildNode,
+  parentDom: ChildNode,
   node: ChildNode,
   nextSibling: ChildNode | undefined
 ) {
   if (nextSibling) {
-    dom.insertBefore(node, nextSibling);
+    parentDom.insertBefore(node, nextSibling);
   } else {
-    dom.appendChild(node);
+    parentDom.appendChild(node);
   }
 }
 
 function diffChild(
-  dom: ChildNode,
-  child: NormalComponentChild,
-  prev: RenderedNode | undefined,
+  parentDom: ChildNode,
+  newChild: NormalComponentChild,
+  oldChild: RenderedNode | undefined,
   nextSibling: ChildNode | undefined
 ): RenderedNode {
-  if (isVNode(child)) {
-    return diff(dom, child, prev, nextSibling);
+  if (isVNode(newChild)) {
+    return diff(parentDom, newChild, oldChild, nextSibling);
   } else {
-    const value = child.toString();
+    const value = newChild.toString();
     let textNode: Text;
 
-    if (prev) {
-      textNode = prev.dom as Text;
+    if (oldChild) {
+      textNode = oldChild.dom as Text;
       textNode.nodeValue = value;
     } else {
       textNode = document.createTextNode(value);
-      insertNode(dom, textNode, nextSibling);
+      insertNode(parentDom, textNode, nextSibling);
     }
 
     return {
@@ -75,11 +75,11 @@ function diffChild(
   }
 }
 
-function nodeKey(child: {
+function nodeKey(node: {
   type: string | Function;
   key?: unknown;
 }): string | symbol | Function {
-  return child.key ? Symbol.for(child.key.toString()) : child.type;
+  return node.key ? Symbol.for(node.key.toString()) : node.type;
 }
 
 function childKey(child: NormalComponentChild): string | symbol | Function {
@@ -90,8 +90,8 @@ function childKey(child: NormalComponentChild): string | symbol | Function {
   }
 }
 
-function diffChilds(
-  dom: ChildNode,
+function diffChildren(
+  parentDom: ChildNode,
   newChildren: NormalComponentChild[],
   oldChildren: RenderedNode[],
   nextSibling: ChildNode | undefined
@@ -107,14 +107,16 @@ function diffChilds(
   for (const change of changes) {
     if (change.added) {
       const ns = oldChildren[iOld]?.dom ?? nextSibling;
-      output.push(diffChild(dom, newChildren[iNew]!, undefined, ns));
+      output.push(diffChild(parentDom, newChildren[iNew]!, undefined, ns));
       iNew++;
     } else if (change.removed) {
       oldChildren[iOld]?.dom.remove();
       iOld++;
     } else {
       const ns = oldChildren[iOld + 1]?.dom ?? nextSibling;
-      output.push(diffChild(dom, newChildren[iNew]!, oldChildren[iOld]!, ns));
+      output.push(
+        diffChild(parentDom, newChildren[iNew]!, oldChildren[iOld]!, ns)
+      );
       iOld++;
       iNew++;
     }
@@ -124,15 +126,15 @@ function diffChilds(
 }
 
 export function diff(
-  dom: ChildNode,
-  node: VNode,
-  prev?: RenderedNode,
+  parentDom: ChildNode,
+  newNode: VNode,
+  oldNode?: RenderedNode,
   nextSibling?: ChildNode
 ): RenderedNode {
-  if (typeof node.type === "function") {
-    const component = node.type;
+  if (typeof newNode.type === "function") {
+    const component = newNode.type;
 
-    const props = Object.assign({}, node.props);
+    const props = Object.assign({}, newNode.props);
     const renderFn = component(props);
 
     // todo: watch
@@ -140,24 +142,29 @@ export function diff(
     // endwatch
 
     return {
-      type: node.type,
-      dom,
+      type: newNode.type,
+      dom: parentDom,
       props,
-      children: diffChilds(dom, newChildren, prev?.children ?? [], nextSibling),
-      key: node.key,
+      children: diffChildren(
+        parentDom,
+        newChildren,
+        oldNode?.children ?? [],
+        nextSibling
+      ),
+      key: newNode.key,
     };
   } else {
     // @ts-ignore
-    const { children: rawChildren, ...props } = node.props;
+    const { children: rawChildren, ...props } = newNode.props;
     const newChildren = normalizeChildren(rawChildren);
 
     let el: ChildNode;
 
     {
-      if (prev) {
-        el = prev.dom;
+      if (oldNode) {
+        el = oldNode.dom;
       } else {
-        el = document.createElement(node.type);
+        el = document.createElement(newNode.type);
       }
 
       // TODO: diff attributes?
@@ -166,16 +173,21 @@ export function diff(
         el.setAttribute(key, value);
       }
 
-      if (!prev) {
-        insertNode(dom, el, nextSibling);
+      if (!oldNode) {
+        insertNode(parentDom, el, nextSibling);
       }
     }
 
     return {
-      type: node.type,
+      type: newNode.type,
       dom: el,
       props: props,
-      children: diffChilds(el, newChildren, prev?.children ?? [], undefined),
+      children: diffChildren(
+        el,
+        newChildren,
+        oldNode?.children ?? [],
+        undefined
+      ),
     };
   }
 }
