@@ -1,9 +1,11 @@
 import "global-jsdom/register";
-import { signal, render } from "sig";
+import { signal, render, computed } from "sig";
 const value = signal(0);
 
 function Other() {
-  return () => <p>{value.$}</p>;
+  const valuePlusOne = computed(() => value.$ + 1);
+
+  return () => <p>{valuePlusOne.$}</p>;
 }
 
 function Counter() {

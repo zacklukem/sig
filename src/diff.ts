@@ -33,7 +33,16 @@ type RenderedNode = {
   children: RenderedNode[];
   key?: unknown;
   watcher?: Signal.subtle.Watcher;
+  removed?: boolean;
 };
+
+function removeNode(node: RenderedNode) {
+  if (node.watcher && node.renderSignal) {
+    node.watcher.unwatch(node.renderSignal);
+  }
+  node.removed = true;
+  node.dom.remove();
+}
 
 function insertNode(parentDom: SigNode, node: SigNode, nextSibling: SigNode | undefined) {
   if (nextSibling) {
@@ -104,7 +113,7 @@ function diffChildren(
       output.push(diffChild(parentDom, newChildren[iNew]!, undefined, ns));
       iNew++;
     } else if (change.removed) {
-      oldChildren[iOld]?.dom.remove();
+      removeNode(oldChildren[iOld]!);
       iOld++;
     } else {
       const ns = oldChildren[iOld + 1]?.dom ?? nextSibling;
@@ -172,8 +181,9 @@ function rerenderTask() {
   Array.from(watchState.updated.keys()).forEach(filterNonRootNodes);
 
   watchState.updated.values().forEach(({ parentDom, vnode, renderedNode, nextSibling }) => {
-    diff(parentDom, vnode, renderedNode, nextSibling);
-    console.log("Updated");
+    if (!renderedNode.removed) {
+      diff(parentDom, vnode, renderedNode, nextSibling);
+    }
   });
 
   watchState.updated = new Map();
@@ -207,13 +217,12 @@ export function diff(
       dom: parentDom,
       props,
       children: diffChildren(parentDom, newChildren, oldNode?.children ?? [], nextSibling),
-      renderSignal: renderSignal,
+      renderSignal,
       key: newNode.key,
     };
 
-    // TODO: handle cleanup
     renderedNode.watcher?.unwatch(renderSignal);
-    const watcher = new Signal.subtle.Watcher(() => {
+    renderedNode.watcher = new Signal.subtle.Watcher(() => {
       watchState.updated.set(renderedNode, {
         parentDom,
         vnode: newNode,
@@ -225,7 +234,7 @@ export function diff(
         queueMicrotask(rerenderTask);
       }
     });
-    watcher.watch(renderSignal);
+    renderedNode.watcher.watch(renderSignal);
 
     return renderedNode;
   } else {
