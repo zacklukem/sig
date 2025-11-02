@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-var */
 // Copied and adapted from Preact https://github.com/preactjs/preact
 
 // LICENSE
@@ -469,7 +472,7 @@ export interface PathAttributes {
 
 export type TargetedEvent<
   Target extends EventTarget = EventTarget,
-  TypedEvent extends Event = Event,
+  TypedEvent extends Event = Event
 > = Omit<TypedEvent, "currentTarget"> & {
   readonly currentTarget: Target;
 };
@@ -2662,7 +2665,7 @@ export interface WbrHTMLAttributes<T extends EventTarget = HTMLElement> extends 
 
 export type DetailedHTMLProps<
   HA extends HTMLAttributes<RefType>,
-  RefType extends EventTarget = EventTarget,
+  RefType extends EventTarget = EventTarget
 > = HA;
 
 export interface MathMLAttributes<Target extends EventTarget = MathMLElement>

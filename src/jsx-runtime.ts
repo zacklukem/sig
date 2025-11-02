@@ -1,14 +1,16 @@
 import * as dom from "./dom";
-import type { ComponentChildren, FunctionComponent, VNode } from "./types";
+import type { FunctionComponent, VNode } from "./types";
 
 export { h as jsx, h as jsxs, h as jsxDEV } from "./h";
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JSX {
   export type Element = VNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type ElementType<P = any> = FunctionComponent<P> | keyof IntrinsicElements;
 
   export interface IntrinsicAttributes {
-    key?: any;
+    key?: unknown;
   }
 
   export interface IntrinsicSVGElements {

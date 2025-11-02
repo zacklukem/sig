@@ -1,5 +1,5 @@
 import { isVNode } from "./brands";
-import { asRef, deref } from "./ref";
+import { deref } from "./ref";
 import { diffArrays } from "diff";
 import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
 
@@ -20,7 +20,7 @@ function normalizeChildren(children: ComponentChildren): NormalComponentChild[] 
 }
 
 type RenderedNode = {
-  type: string | Function;
+  type: string | object;
   dom: ChildNode;
   props: object;
   children: RenderedNode[];
@@ -64,11 +64,11 @@ function diffChild(
   }
 }
 
-function nodeKey(node: { type: string | Function; key?: unknown }): string | symbol | Function {
+function nodeKey(node: { type: string | object; key?: unknown }): string | symbol | object {
   return node.key ? Symbol.for(node.key.toString()) : node.type;
 }
 
-function childKey(child: NormalComponentChild): string | symbol | Function {
+function childKey(child: NormalComponentChild): string | symbol | object {
   if (isVNode(child)) {
     return nodeKey(child);
   } else {
@@ -133,7 +133,7 @@ export function diff(
       key: newNode.key,
     };
   } else {
-    // @ts-ignore
+    // @ts-expect-error children may be undefined
     const { children: rawChildren, ...props } = newNode.props;
     const newChildren = normalizeChildren(rawChildren);
 
@@ -148,7 +148,7 @@ export function diff(
 
       // TODO: diff attributes?
       for (const [key, value] of Object.entries(props)) {
-        // @ts-ignore TODO: do better and handle event listeners
+        // @ts-expect-error TODO: do better and handle event listeners
         el.setAttribute(key, value);
       }
 

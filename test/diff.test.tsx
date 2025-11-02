@@ -1,5 +1,5 @@
-import { beforeAll, beforeEach, expect, test } from "bun:test";
-import { diff, type VNode } from "sig";
+import { beforeEach, expect, test } from "bun:test";
+import { diff } from "sig";
 
 function resetDom() {
   document.body.childNodes.forEach((item) => item.remove());
