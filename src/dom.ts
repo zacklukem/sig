@@ -30,7 +30,7 @@ SOFTWARE.
 
 // Most of our DOM-ish types
 
-import type { RefOrValue } from "./ref";
+import type { Ref, RefOrValue } from "./ref";
 import type { ComponentChildren } from "./types";
 
 export interface BaseAttributes {
@@ -569,6 +569,8 @@ export type PictureInPictureEventHandler<Target extends EventTarget> = EventHand
 >;
 
 export interface DOMAttributes<Target extends EventTarget> extends BaseAttributes {
+  ref?: Ref<Target | undefined> | undefined;
+
   // Image Events
   onLoad?: GenericEventHandler<Target> | undefined;
   onLoadCapture?: GenericEventHandler<Target> | undefined;

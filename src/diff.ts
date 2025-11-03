@@ -1,5 +1,5 @@
 import { isVNode } from "./brands";
-import { deref } from "./ref";
+import { deref, isRef } from "./ref";
 import { diffArrays } from "diff";
 import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
 import { initSigDom, SigDom } from "./sig-dom";
@@ -131,7 +131,9 @@ function diffChildren(
 
 function updateAttributes(props: object, el: SigDom<Element>) {
   for (const [key, value] of Object.entries(props)) {
-    if (key in el) {
+    if (key === "ref" && isRef(value)) {
+      value.$ = el;
+    } else if (key in el) {
       // @ts-expect-error anyish
       el[key] = value == null ? "" : value;
     }

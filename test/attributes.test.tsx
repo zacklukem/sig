@@ -7,3 +7,10 @@ test("runs event listeners", () => {
   document.getElementById("clicker")!.click();
   expect(hit).toBeTrue();
 });
+
+test("binds with ref", () => {
+  const ref = { $: undefined as HTMLDivElement | undefined };
+  render(<div ref={ref} id="clicker"></div>);
+  // @ts-expect-error its ok
+  expect(ref.$).toBe(document.getElementById("clicker")!);
+});
