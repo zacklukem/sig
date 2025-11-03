@@ -1,4 +1,4 @@
-import { render, signal, type Ref } from "sig";
+import { $effect, render, signal, type Ref } from "sig";
 
 function append<T>(ref: Ref<T[]>, value: T) {
   ref.$ = [...ref.$, value];
@@ -11,6 +11,10 @@ function remove<T>(ref: Ref<T[]>, value: T) {
 function TodoList() {
   const items = signal(["Eat", "Sleep", "Cook"]);
   const inputValue = signal("");
+
+  $effect(() => {
+    console.log(items.$);
+  });
 
   return () => (
     <>
