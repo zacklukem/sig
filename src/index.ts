@@ -7,6 +7,7 @@ export * from "./types";
 export * from "./ref";
 export * from "./signal";
 export * from "./diff";
+export * from "./hooks";
 
 export function render(parentDom: ChildNode, newNode: VNode) {
   diff(initSigDom(parentDom), newNode);

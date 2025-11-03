@@ -4,6 +4,7 @@ import { diffArrays } from "diff";
 import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
 import { initSigDom, SigDom } from "./sig-dom";
 import { Signal } from "signal-polyfill";
+import { trackHooks, type Hook } from "./hooks/tracking";
 
 const textNodeType = "text";
 
@@ -34,6 +35,7 @@ type RenderedNode = {
   key?: unknown;
   watcher?: Signal.subtle.Watcher;
   removed?: boolean;
+  hooks?: Hook[];
 };
 
 function removeNode(node: RenderedNode) {
@@ -41,6 +43,7 @@ function removeNode(node: RenderedNode) {
     node.watcher.unwatch(node.renderSignal);
   }
   node.removed = true;
+  node.hooks?.forEach((hook) => hook?.onUnmount?.());
   node.dom.remove();
 }
 
@@ -218,6 +221,7 @@ export function diff(
   if (typeof newNode.type === "function") {
     const component = newNode.type;
 
+    let hooks: Hook[];
     let props: object;
     let renderSignal: RenderSignal;
     if (oldNode) {
@@ -228,6 +232,8 @@ export function diff(
 
       // TODO: remove old prop keys
       Object.assign(props, newNode.props);
+
+      hooks = oldNode.hooks!;
     } else {
       props = buildReactiveObject();
 
@@ -235,7 +241,8 @@ export function diff(
       Object.assign(props, newNode.props);
 
       // TODO: watch for hooks
-      const renderFn = component(props);
+      let renderFn: () => ComponentChildren;
+      [renderFn, hooks] = trackHooks(() => component(props));
 
       renderSignal = new Signal.Computed(() => {
         return normalizeChildren(renderFn());
@@ -251,6 +258,7 @@ export function diff(
       children: diffChildren(parentDom, newChildren, oldNode?.children ?? [], nextSibling),
       renderSignal,
       key: newNode.key,
+      hooks,
     };
 
     renderedNode.watcher = new Signal.subtle.Watcher(() => {
