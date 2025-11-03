@@ -242,7 +242,6 @@ export function diff(
       // TODO: remove old prop keys
       Object.assign(props, newNode.props);
 
-      // TODO: watch for hooks
       let renderFn: () => ComponentChildren;
       [renderFn, hooks] = trackHooks(() => component(props));
 
