@@ -1,5 +1,7 @@
 export type Hook = {
   onUnmount?: () => void;
+  beforeRender?: () => void;
+  afterRender?: () => void;
 };
 
 const trackingStack: Hook[][] = [];

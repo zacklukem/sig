@@ -1,9 +1,9 @@
 import { describe, expect, test, mock } from "bun:test";
 import { render } from "./helpers/render";
-import { $effect, $unmount, signal } from "sig";
+import { $consume, $effect, $provide, $unmount, signal } from "sig";
 import { waitFor } from "@testing-library/dom";
 
-describe("$unmount", () => {
+describe("unmount", () => {
   test("runs unmount hook", async () => {
     const hit = mock();
     const visible = signal(true);
@@ -26,7 +26,7 @@ describe("$unmount", () => {
   });
 });
 
-describe("$effect", () => {
+describe("effect", () => {
   test("runs effect hook", async () => {
     const hit = mock();
     const hitCleanup = mock();
@@ -62,5 +62,24 @@ describe("$effect", () => {
     mounted.$ = false;
 
     await waitFor(() => expect(hitCleanup).toHaveBeenCalledWith("c-cleanup"));
+  });
+});
+
+describe("provide, consume", () => {
+  test("runs provide and consume hooks", () => {
+    const key = Symbol();
+
+    function Consumer() {
+      const value = $consume<string>(key);
+      return () => <div id="value">{value.$}</div>;
+    }
+
+    function Provider() {
+      $provide<string>(key, () => "Hello, world!");
+      return () => <Consumer />;
+    }
+
+    render(<Provider />);
+    expect(document.getElementById("value")!.textContent).toBe("Hello, world!");
   });
 });

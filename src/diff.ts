@@ -250,6 +250,7 @@ export function diff(
       });
     }
 
+    hooks?.forEach((hook) => hook.beforeRender?.());
     const newChildren = renderSignal.get();
 
     const renderedNode: RenderedNode = {
@@ -261,6 +262,7 @@ export function diff(
       key: newNode.key,
       hooks,
     };
+    hooks?.forEach((hook) => hook.afterRender?.());
 
     renderedNode.watcher = new Signal.subtle.Watcher(() => {
       watchState.updated.set(renderedNode, {
