@@ -1,4 +1,4 @@
-import { diff, type VNode } from "sig";
+import { diff, type VNode } from "@zacklukem/sig";
 import { initSigDom } from "../../src/sig-dom";
 
 export function render(jsx: VNode) {

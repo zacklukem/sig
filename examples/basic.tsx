@@ -1,5 +1,5 @@
 import "global-jsdom/register";
-import { signal, render, computed } from "sig";
+import { signal, render, computed } from "@zacklukem/sig";
 const value = signal(0);
 
 function Text(props: { value: number }) {

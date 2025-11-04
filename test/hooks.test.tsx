@@ -1,6 +1,6 @@
 import { describe, expect, test, mock } from "bun:test";
 import { render } from "./helpers/render";
-import { $consume, $effect, $provide, $unmount, signal } from "sig";
+import { $consume, $effect, $provide, $unmount, signal } from "@zacklukem/sig";
 import { waitFor } from "@testing-library/dom";
 
 describe("unmount", () => {

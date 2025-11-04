@@ -6,7 +6,7 @@
     "module": "Preserve",
     "moduleDetection": "force",
     "jsx": "react-jsx",
-    "jsxImportSource": "sig",
+    "jsxImportSource": "@zacklukem/sig",
     "allowJs": true,
 
     // Bundler mode
@@ -28,9 +28,9 @@
     "noPropertyAccessFromIndexSignature": false,
 
     "paths": {
-      "sig": ["./src"],
-      "sig/jsx-runtime": ["./src"],
-      "sig/jsx-dev-runtime": ["./src"]
+      "@zacklukem/sig": ["./src"],
+      "@zacklukem/sig/jsx-runtime": ["./src"],
+      "@zacklukem/sig/jsx-dev-runtime": ["./src"]
     }
   }
 }

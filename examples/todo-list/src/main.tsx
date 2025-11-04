@@ -1,4 +1,4 @@
-import { $effect, render, signal, type Ref } from "sig";
+import { $effect, render, signal, type Ref } from "@zacklukem/sig";
 
 function append<T>(ref: Ref<T[]>, value: T) {
   ref.$ = [...ref.$, value];

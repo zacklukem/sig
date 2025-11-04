@@ -1,6 +1,6 @@
 import { expect, mock, test } from "bun:test";
 import { render } from "./helpers/render";
-import { batch, effect, signal } from "sig";
+import { batch, effect, signal } from "@zacklukem/sig";
 import { waitFor } from "@testing-library/dom";
 
 test("reacts to events", async () => {

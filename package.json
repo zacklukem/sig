@@ -1,5 +1,5 @@
 {
-  "name": "sig",
+  "name": "@zacklukem/sig",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "main": "dist/index.cjs",

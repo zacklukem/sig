@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { diff } from "sig";
+import { diff } from "@zacklukem/sig";
 import { initSigDom } from "../src/sig-dom";
 
 function MyComponent() {
