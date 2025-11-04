@@ -5,7 +5,8 @@
   "main": "dist/index.cjs",
   "type": "module",
   "workspaces": [
-    "examples/todo-list"
+    "examples/todo-list",
+    "examples/benchmark"
   ],
   "scripts": {
     "build": "bun run build.ts"
