@@ -4,7 +4,8 @@
   "module": "dist/index.js",
   "main": "dist/index.cjs",
   "type": "module",
-  "license": "(MIT OR Apache-2.0)",
+  "license": "MIT",
+  "version": "0.1.0",
   "workspaces": [
     "examples/todo-list",
     "examples/benchmark"
