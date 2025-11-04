@@ -12,10 +12,12 @@ await Promise.all([
     plugins: [dts()],
     format: "esm",
     naming: "[dir]/[name].js",
+    sourcemap: true,
   }),
   Bun.build({
     ...defaultBuildConfig,
     format: "cjs",
     naming: "[dir]/[name].cjs",
+    sourcemap: true,
   }),
 ]);

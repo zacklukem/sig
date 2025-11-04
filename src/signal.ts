@@ -27,29 +27,49 @@ export function computed<T>(computation: () => T): Ref<T> {
   };
 }
 
+const signalCleanup = Symbol();
+let pending = false;
+
+const watcher = new Signal.subtle.Watcher(() => {
+  if (!pending) {
+    pending = true;
+    queueMicrotask(() => {
+      pending = false;
+
+      for (const signal of watcher.getPending()) {
+        // @ts-expect-error using custom property
+        signal[signalCleanup] = signal.get();
+      }
+      watcher.watch();
+    });
+  }
+});
+
 export function effect(fn: () => (() => void) | void) {
-  let cleanup: (() => void) | undefined | void;
   const signal = new Signal.Computed(() => {
-    if (cleanup) Signal.subtle.untrack(cleanup);
+    // @ts-expect-error using custom property
+    if (signal[signalCleanup]) Signal.subtle.untrack(signal[signalCleanup]);
     return fn();
   });
-  let pending = false;
-
-  const watcher = new Signal.subtle.Watcher(() => {
-    if (!pending) {
-      pending = true;
-      queueMicrotask(() => {
-        pending = false;
-        cleanup = signal.get();
-        watcher.watch();
-      });
-    }
-  });
   watcher.watch(signal);
-  cleanup = signal.get();
+  // @ts-expect-error using custom property
+  signal[signalCleanup] = signal.get();
 
   return () => {
-    if (cleanup) cleanup();
+    // @ts-expect-error using custom property
+    if (signal[signalCleanup]) signal[signalCleanup]();
     watcher.unwatch(signal);
   };
+}
+
+export function batch<T>(fn: () => T): T {
+  pending = true;
+  const value = fn();
+  pending = false;
+  for (const signal of watcher.getPending()) {
+    // @ts-expect-error using custom property
+    signal[signalCleanup] = signal.get();
+  }
+  watcher.watch();
+  return value;
 }
