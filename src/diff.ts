@@ -26,7 +26,7 @@ type SigNode = SigDom<ChildNode>;
 
 type RenderSignal = Signal.Computed<NormalComponentChild[]>;
 
-type RenderedNode = {
+export type RenderedNode = {
   type: string | object;
   renderSignal?: RenderSignal;
   dom: SigNode;
@@ -203,20 +203,56 @@ function rerenderTask() {
   watchState.updated = new Map();
 }
 
-function buildReactiveObject(): object {
-  return new Proxy({} as Record<string | symbol, Signal.State<unknown>>, {
-    set(target, p, v) {
-      if (p in target) {
-        target[p]!.set(v);
-      } else {
-        target[p] = new Signal.State(v);
+const deletedSignal = Symbol();
+
+const reactiveProxyHandlers: ProxyHandler<Record<PropertyKey, Signal.State<unknown>>> = {
+  set(target, p, v) {
+    target[p] ??= new Signal.State(v);
+    target[p]!.set(v);
+    return true;
+  },
+  get(target, p) {
+    target[p] ??= new Signal.State(deletedSignal);
+    return target[p].get();
+  },
+  deleteProperty(target, p) {
+    target[p]?.set(deletedSignal);
+    return true;
+  },
+  has(target, p) {
+    target[p] ??= new Signal.State(deletedSignal);
+    return target[p].get() !== deletedSignal;
+  },
+  ownKeys(target) {
+    // TODO: track key add/remove
+    return Signal.subtle.untrack(() =>
+      Reflect.ownKeys(target).filter((key) => target[key]?.get() !== deletedSignal)
+    );
+  },
+  getOwnPropertyDescriptor(target, p) {
+    // TODO: track key add/remove
+    return Signal.subtle.untrack(() => {
+      if (target[p] && target[p].get() !== deletedSignal) {
+        return {
+          configurable: true,
+          enumerable: true,
+          writable: true,
+        };
       }
-      return true;
-    },
-    get(target, p) {
-      return target[p]?.get();
-    },
-  });
+    });
+  },
+};
+
+function buildReactiveObject(): object {
+  return new Proxy({}, reactiveProxyHandlers);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assignDiff(target: any, source: any) {
+  for (const key of new Set(Object.keys(target)).difference(new Set(Object.keys(source)))) {
+    delete target[key];
+  }
+  Object.assign(target, source);
 }
 
 export function diff(
@@ -237,15 +273,13 @@ export function diff(
 
       props = oldNode.props;
 
-      // TODO: remove old prop keys
-      Object.assign(props, newNode.props);
+      assignDiff(props, newNode.props);
 
       hooks = oldNode.hooks!;
     } else {
       props = buildReactiveObject();
 
-      // TODO: remove old prop keys
-      Object.assign(props, newNode.props);
+      assignDiff(props, newNode.props);
 
       let renderFn: () => ComponentChildren;
       [renderFn, hooks] = trackHooks(() => component(props));

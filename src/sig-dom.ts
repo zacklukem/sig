@@ -1,10 +1,14 @@
+import type { RenderedNode } from "./diff";
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace SigDom {
   export const listeners = Symbol("listeners");
+  export const renderedNode = Symbol("renderedNode");
 }
 
 export type SigDom<E extends Node> = E & {
   [SigDom.listeners]: Record<string, object>;
+  [SigDom.renderedNode]?: RenderedNode;
 };
 
 export function initSigDom<E extends Node>(e: E): SigDom<E> {

@@ -1,6 +1,8 @@
 import { expect, test } from "bun:test";
 import { diff } from "@zacklukem/sig";
 import { initSigDom } from "../src/sig-dom";
+import { render } from "./helpers/render";
+import { waitFor } from "@testing-library/dom";
 
 function MyComponent() {
   return () => <span></span>;
@@ -54,4 +56,18 @@ test.each([
   const actual = actualNode.innerHTML;
 
   expect(actual).toBe(expected);
+});
+
+test("asdf", async () => {
+  function Component(props: Record<string, undefined>) {
+    return () => {
+      return <div id="value">{"prop" in props ? "true" : "false"}</div>;
+    };
+  }
+
+  const rerender = render(<Component prop={undefined} />);
+  const node = document.getElementById("value")!;
+  expect(node.textContent).toBe("true");
+  rerender(<Component />);
+  expect(node.textContent).toBe("false");
 });

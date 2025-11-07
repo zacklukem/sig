@@ -1,5 +1,5 @@
 import { diff } from "./diff";
-import { initSigDom } from "./sig-dom";
+import { initSigDom, SigDom } from "./sig-dom";
 import type { VNode } from "./types";
 
 export * from "./jsx-runtime";
@@ -10,5 +10,7 @@ export * from "./diff";
 export * from "./hooks";
 
 export function render(parentDom: ChildNode, newNode: VNode) {
-  diff(initSigDom(parentDom), newNode);
+  const dom = initSigDom(parentDom);
+
+  dom[SigDom.renderedNode] = diff(dom, newNode, dom[SigDom.renderedNode]);
 }
