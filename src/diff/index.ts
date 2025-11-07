@@ -4,7 +4,7 @@ import type { ComponentChildren, NormalComponentChild, VNode } from "../types";
 import { initSigDom, SigDom } from "../sig-dom";
 import { Signal } from "signal-polyfill";
 import { trackHooks, type Hook } from "../hooks/tracking";
-import { assignDiff, buildReactiveObject } from "../helpers";
+import { assignDiff, buildReactiveObject } from "../utils";
 import { updateAttributes } from "./updateAttributes";
 import {
   type SigNode,
