@@ -7,7 +7,6 @@ test("reacts to events", async () => {
   const value = signal(0);
 
   function Component() {
-    // TODO: the deref shouldn't be required here for this to work
     return () => <div id="value">{value.$}</div>;
   }
 
@@ -33,6 +32,32 @@ test("reacts to prop updates", async () => {
   }
 
   render(<Component />);
+  const valueElement = document.getElementById("value");
+
+  expect(valueElement?.textContent).toBe("0");
+  value.$ = 1234;
+  await waitFor(() => expect(valueElement?.textContent).toBe("1234"));
+  value.$ = 4321;
+  await waitFor(() => expect(valueElement?.textContent).toBe("4321"));
+});
+
+test("props are reactive", async () => {
+  const value = signal(0);
+
+  render(<input id="value" value={value} />);
+  const valueElement = document.getElementById("value") as HTMLInputElement;
+
+  expect(valueElement.value).toBe("0");
+  value.$ = 1234;
+  await waitFor(() => expect(valueElement.value).toBe("1234"));
+  value.$ = 4321;
+  await waitFor(() => expect(valueElement.value).toBe("4321"));
+});
+
+test("children are reactive", async () => {
+  const value = signal(0);
+
+  render(<div id="value">{value}</div>);
   const valueElement = document.getElementById("value");
 
   expect(valueElement?.textContent).toBe("0");

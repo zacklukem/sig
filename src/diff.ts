@@ -34,6 +34,7 @@ type RenderedNode = {
   children: RenderedNode[];
   key?: unknown;
   watcher?: Signal.subtle.Watcher;
+  domSignal?: Signal.Computed<unknown>;
   removed?: boolean;
   hooks?: Hook[];
 };
@@ -130,10 +131,14 @@ function diffChildren(
 }
 
 function updateAttributes(props: object, el: SigDom<Element>) {
-  for (const [key, value] of Object.entries(props)) {
-    if (key === "ref" && isRef(value)) {
-      value.$ = el;
-    } else if (key in el) {
+  for (const [key, $value] of Object.entries(props)) {
+    if (key === "ref" && isRef($value)) {
+      $value.$ = el;
+      continue;
+    }
+
+    const value = deref($value);
+    if (key in el) {
       // @ts-expect-error anyish
       el[key] = value == null ? "" : value;
     }
@@ -282,29 +287,50 @@ export function diff(
   } else {
     // @ts-expect-error children may be undefined
     const { children: rawChildren, ...props } = newNode.props;
-    const newChildren = normalizeChildren(rawChildren);
 
     let el: SigDom<Element>;
 
-    {
-      if (oldNode) {
-        el = oldNode.dom as SigDom<Element>;
-      } else {
-        el = initSigDom(document.createElement(newNode.type));
+    if (oldNode) {
+      el = oldNode.dom as SigDom<Element>;
+      if (oldNode.domSignal) {
+        oldNode.watcher?.unwatch(oldNode.domSignal);
       }
-
-      updateAttributes(props, el);
-
-      if (!oldNode) {
-        insertNode(parentDom, el, nextSibling);
-      }
+    } else {
+      el = initSigDom(document.createElement(newNode.type));
     }
 
-    return {
+    const domSignal = new Signal.Computed(() => {
+      updateAttributes(props, el);
+      return normalizeChildren(rawChildren);
+    });
+    const newChildren = domSignal.get();
+
+    if (!oldNode) {
+      insertNode(parentDom, el, nextSibling);
+    }
+
+    const renderedNode: RenderedNode = {
       type: newNode.type,
       dom: el,
       props: props,
       children: diffChildren(el, newChildren, oldNode?.children ?? [], undefined),
+      domSignal,
     };
+
+    renderedNode.watcher = new Signal.subtle.Watcher(() => {
+      watchState.updated.set(renderedNode, {
+        parentDom,
+        vnode: newNode,
+        renderedNode,
+        nextSibling,
+      });
+
+      if (watchState.updated.size === 1) {
+        queueMicrotask(rerenderTask);
+      }
+    });
+    renderedNode.watcher.watch(domSignal);
+
+    return renderedNode;
   }
 }
