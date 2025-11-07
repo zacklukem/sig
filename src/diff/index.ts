@@ -4,7 +4,7 @@ import type { ComponentChildren, NormalComponentChild, VNode } from "../types";
 import { initSigDom, SigDom } from "../sig-dom";
 import { Signal } from "signal-polyfill";
 import { trackHooks, type Hook } from "../hooks/tracking";
-import { assignDiff, buildReactiveObject } from "../utils";
+import { assignDiff } from "../utils";
 import { updateAttributes } from "./updateAttributes";
 import {
   type SigNode,
@@ -15,6 +15,7 @@ import {
   type RenderSignal,
   normalizeChildren,
 } from "./utils";
+import { reactive } from "../signal";
 
 function diffChild(
   parentDom: SigNode,
@@ -148,9 +149,7 @@ export function diff(
 
       hooks = oldNode.hooks!;
     } else {
-      props = buildReactiveObject();
-
-      assignDiff(props, newNode.props);
+      props = reactive(newNode.props);
 
       let renderFn: () => ComponentChildren;
       [renderFn, hooks] = trackHooks(() => component(props));

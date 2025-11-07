@@ -1,5 +1,6 @@
 import { Signal } from "signal-polyfill";
-import type { Ref } from "./ref";
+import type { Ref } from "../ref";
+export * from "./reactive";
 
 export function signal<T>(): Ref<T | undefined>;
 export function signal<T>(value: T): Ref<T>;
