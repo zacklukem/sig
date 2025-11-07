@@ -2,7 +2,6 @@ import { expect, test } from "bun:test";
 import { diff } from "@zacklukem/sig";
 import { initSigDom } from "../src/sig-dom";
 import { render } from "./helpers/render";
-import { waitFor } from "@testing-library/dom";
 
 function MyComponent() {
   return () => <span></span>;
