@@ -1,60 +1,20 @@
-import { isVNode } from "./brands";
-import { deref, isRef } from "./ref";
+import { isVNode } from "../brands";
 import { diffArrays } from "diff";
-import type { ComponentChild, ComponentChildren, NormalComponentChild, VNode } from "./types";
-import { initSigDom, SigDom } from "./sig-dom";
+import type { ComponentChildren, NormalComponentChild, VNode } from "../types";
+import { initSigDom, SigDom } from "../sig-dom";
 import { Signal } from "signal-polyfill";
-import { trackHooks, type Hook } from "./hooks/tracking";
-
-const textNodeType = "text";
-
-function isNormalChild(child: ComponentChild): child is NormalComponentChild {
-  return child !== null && child !== undefined && typeof child !== "boolean";
-}
-
-function normalizeChildren(children: ComponentChildren): NormalComponentChild[] {
-  if (Array.isArray(children)) {
-    return children.flat().map(deref).filter(isNormalChild);
-  } else if (isNormalChild(children)) {
-    return [deref(children)];
-  } else {
-    return [];
-  }
-}
-
-type SigNode = SigDom<ChildNode>;
-
-type RenderSignal = Signal.Computed<NormalComponentChild[]>;
-
-export type RenderedNode = {
-  type: string | object;
-  renderSignal?: RenderSignal;
-  dom: SigNode;
-  props: object;
-  children: RenderedNode[];
-  key?: unknown;
-  watcher?: Signal.subtle.Watcher;
-  domSignal?: Signal.Computed<unknown>;
-  removed?: boolean;
-  hooks?: Hook[];
-};
-
-function removeNode(node: RenderedNode) {
-  if (node.watcher && node.renderSignal) {
-    node.watcher.unwatch(node.renderSignal);
-  }
-  node.removed = true;
-  node.hooks?.forEach((hook) => hook?.onUnmount?.());
-  node.dom.remove();
-}
-
-function insertNode(parentDom: SigNode, node: SigNode, nextSibling: SigNode | undefined) {
-  if (nextSibling) {
-    parentDom.insertBefore(node, nextSibling);
-  } else {
-    parentDom.appendChild(node);
-  }
-}
+import { trackHooks, type Hook } from "../hooks/tracking";
+import { assignDiff, buildReactiveObject } from "../helpers";
+import { updateAttributes } from "./updateAttributes";
+import {
+  type SigNode,
+  type RenderedNode,
+  insertNode,
+  textNodeType,
+  removeNode,
+  type RenderSignal,
+  normalizeChildren,
+} from "./utils";
 
 function diffChild(
   parentDom: SigNode,
@@ -85,7 +45,10 @@ function diffChild(
   }
 }
 
-function nodeKey(node: { type: string | object; key?: unknown }): string | symbol | object {
+function nodeKey(node: {
+  type: symbol | string | object;
+  key?: unknown;
+}): string | symbol | object {
   return node.key ? Symbol.for(node.key.toString()) : node.type;
 }
 
@@ -130,46 +93,6 @@ function diffChildren(
   return output;
 }
 
-function updateAttributes(props: object, el: SigDom<Element>) {
-  for (const [key, $value] of Object.entries(props)) {
-    if (key === "ref" && isRef($value)) {
-      $value.$ = el;
-      continue;
-    }
-
-    const value = deref($value);
-    if (key in el) {
-      // @ts-expect-error anyish
-      el[key] = value == null ? "" : value;
-    }
-    // TODO: inline styles
-    else if (key.startsWith("on")) {
-      const eventName = key.slice(2).toLowerCase();
-      const oldValue = el[SigDom.listeners][eventName];
-
-      if (oldValue !== value) {
-        if (typeof oldValue === "function") {
-          // @ts-expect-error its a function
-          el.removeEventListener(eventName, oldValue);
-        }
-        if (typeof value === "function") {
-          el.addEventListener(eventName, value);
-        }
-      }
-
-      el[SigDom.listeners][eventName] = value;
-    } else {
-      if (typeof value === "function") {
-        // never serialize functions as attribute values
-      } else if (value != null && (value !== false || key[4] == "-")) {
-        el.setAttribute(key, key == "popover" && value == true ? "" : value);
-      } else {
-        el.removeAttribute(key);
-      }
-    }
-  }
-}
-
 // TODO: move to shared state
 const watchState = {
   updated: new Map<
@@ -201,58 +124,6 @@ function rerenderTask() {
   });
 
   watchState.updated = new Map();
-}
-
-const deletedSignal = Symbol();
-
-const reactiveProxyHandlers: ProxyHandler<Record<PropertyKey, Signal.State<unknown>>> = {
-  set(target, p, v) {
-    target[p] ??= new Signal.State(v);
-    target[p]!.set(v);
-    return true;
-  },
-  get(target, p) {
-    target[p] ??= new Signal.State(deletedSignal);
-    return target[p].get();
-  },
-  deleteProperty(target, p) {
-    target[p]?.set(deletedSignal);
-    return true;
-  },
-  has(target, p) {
-    target[p] ??= new Signal.State(deletedSignal);
-    return target[p].get() !== deletedSignal;
-  },
-  ownKeys(target) {
-    // TODO: track key add/remove
-    return Signal.subtle.untrack(() =>
-      Reflect.ownKeys(target).filter((key) => target[key]?.get() !== deletedSignal)
-    );
-  },
-  getOwnPropertyDescriptor(target, p) {
-    // TODO: track key add/remove
-    return Signal.subtle.untrack(() => {
-      if (target[p] && target[p].get() !== deletedSignal) {
-        return {
-          configurable: true,
-          enumerable: true,
-          writable: true,
-        };
-      }
-    });
-  },
-};
-
-function buildReactiveObject(): object {
-  return new Proxy({}, reactiveProxyHandlers);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assignDiff(target: any, source: any) {
-  for (const key of new Set(Object.keys(target)).difference(new Set(Object.keys(source)))) {
-    delete target[key];
-  }
-  Object.assign(target, source);
 }
 
 export function diff(

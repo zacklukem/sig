@@ -1,4 +1,4 @@
-import type { RenderedNode } from "./diff";
+import type { RenderedNode } from "./diff/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace SigDom {

@@ -36,14 +36,18 @@ const watcher = new Signal.subtle.Watcher(() => {
     queueMicrotask(() => {
       pending = false;
 
-      for (const signal of watcher.getPending()) {
-        // @ts-expect-error using custom property
-        signal[signalCleanup] = signal.get();
-      }
-      watcher.watch();
+      updateWatched();
     });
   }
 });
+
+function updateWatched() {
+  for (const signal of watcher.getPending()) {
+    // @ts-expect-error using custom property
+    signal[signalCleanup] = signal.get();
+  }
+  watcher.watch();
+}
 
 export function effect(fn: () => (() => void) | void) {
   const signal = new Signal.Computed(() => {
@@ -66,10 +70,6 @@ export function batch<T>(fn: () => T): T {
   pending = true;
   const value = fn();
   pending = false;
-  for (const signal of watcher.getPending()) {
-    // @ts-expect-error using custom property
-    signal[signalCleanup] = signal.get();
-  }
-  watcher.watch();
+  updateWatched();
   return value;
 }
